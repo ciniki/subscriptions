@@ -1,0 +1,45 @@
+#
+# Description
+# -----------
+# The subscriptions table stores the subscription or mailng lists
+# for a business.  The customers who are subscribed to the lists
+# are stored in subscription_customers.
+#
+# By default, a subscription will be created for each business,
+# which will be set to auto_subscribe.
+# 
+# *note* This table was designed to go with newsletters, but
+# still don't know how to allow customers to subscribe to a blog.
+#
+# Fields
+# ------
+# id:				The subscription id.
+# business_id:		The business the subscription is attached to.
+# flags:			The flags for this subscription list.  *future*
+#
+#					0x01 - auto subscribe new customers
+#					0x02 - email - send mailings by email, if customer subscribed by email
+#					0x04 - postal - send mailings by postal, if customer subscribed by email
+#					0x08 - unused
+#
+# name:				The name for the subscription.  This field will
+# 					be displayed to the customer.
+#
+# description:		Free form field for the business owner to enter a 
+#					description about the subscription.  This field will
+#					be shown to customers.
+#
+# date_added:		The date and time the record was added.
+# last_updated:		The date and time the record was last updated.
+#
+create table subscriptions (
+	id int not null auto_increment,
+	business_id int not null,
+	flags tinyint unsigned not null,
+	name varchar(150) not null,
+	description varchar(2000) not null,
+	date_added datetime not null,
+	last_updated datetime not null,
+	primary key (id),
+	index (business_id)
+) ENGINE='InnoDB', COMMENT='v1.01';

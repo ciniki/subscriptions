@@ -1,0 +1,3 @@
+This module is used to manage subscription lists of users.  The module
+is used as a basis for Newsletters module.  Subscriptions are mailing lists
+which customers can subscribe and un-subscribe from through the interface.

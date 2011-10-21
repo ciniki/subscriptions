@@ -1,0 +1,26 @@
+#
+# Description
+# -----------
+# This table is used to link customers with subscriptions.  
+#
+# Fields
+# ------
+# subscription_id:	The subscription to add the customer relationship to.
+# customer_id:		The customer of the business.
+# status:			The status of the subscription
+#					0 - unknown
+#					1 - subscribed
+#					2 - pending
+#					15 - removed
+#
+# date_added:		The date and time the record was added.
+# last_updated:		The date and time the record was last updated.
+#
+create table subscription_customers (
+	subscription_id int not null,				# links to subscriptions tables
+	customer_id int not null,					# links to users table
+	status tinyint unsigned not null,
+	date_added datetime not null,
+	last_updated datetime not null,
+	primary key (subscription_id, customer_id)
+) ENGINE='InnoDB', COMMENT='v1.01';
