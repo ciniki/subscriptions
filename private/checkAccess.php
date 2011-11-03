@@ -43,7 +43,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 		return $rc;
 	}
 	if( !isset($rc['module']) || !isset($rc['module']['ruleset']) || $rc['module']['ruleset'] == '' ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'382', 'msg'=>'Access denied.'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'382', 'msg'=>'Access denied.'));
 	}
 
 	//
@@ -57,7 +57,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 	// Check to see if the ruleset is valid
 	//
 	if( !isset($rulesets[$rc['module']['ruleset']]) ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'383', 'msg'=>'Access denied.'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'383', 'msg'=>'Access denied.'));
 	}
 	$ruleset = $rc['module']['ruleset'];
 
@@ -70,7 +70,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 	} elseif( isset($rulesets[$ruleset]['default']) ) {
 		$rules = $rulesets[$ruleset]['default'];
 	} else {
-		return array('stat'=>'fail', 'err'=>array('code'=>'384', 'msg'=>'Access denied.'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'384', 'msg'=>'Access denied.'));
 	}
 
 
@@ -95,7 +95,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 			|| $rc['subscription']['business_id'] != $business_id 
 			|| $rc['subscription']['id'] != $subscription_id ) {
 			// Access denied!
-			return array('stat'=>'fail', 'err'=>array('code'=>'388', 'msg'=>'Access denied'));
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'388', 'msg'=>'Access denied'));
 		}
 		//
 		// The subscription is attached to the specified business
@@ -132,7 +132,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 			|| $rc['user']['business_id'] != $business_id 
 			|| $rc['user']['user_id'] != $ciniki['session']['user']['id'] ) {
 			// Access Granted!
-			return array('stat'=>'fail', 'err'=>array('code'=>'385', 'msg'=>'Access denied.'));
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'385', 'msg'=>'Access denied.'));
 		}
 	}
 

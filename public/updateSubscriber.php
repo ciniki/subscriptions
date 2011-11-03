@@ -37,7 +37,7 @@ function ciniki_subscriptions_updateSubscriber($ciniki) {
 	} elseif( $args['status'] == 'Unsubscribed' ) {
 		$status = 99;
 	} else {
-		return array('stat'=>'fail', 'err'=>array('code'=>'392', 'msg'=>'Invalid status'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'392', 'msg'=>'Invalid status'));
 	}
 
     //  

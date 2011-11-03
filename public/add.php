@@ -72,7 +72,7 @@ function ciniki_subscriptions_add($ciniki) {
 	}
 	if( !isset($rc['insert_id']) || $rc['insert_id'] < 1 ) {
 		ciniki_core_dbTransactionRollback($ciniki, 'subscriptions');
-		return array('stat'=>'fail', 'err'=>array('code'=>'387', 'msg'=>'Unable to add subscription'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'387', 'msg'=>'Unable to add subscription'));
 	}
 	$subscription_id = $rc['insert_id'];
 

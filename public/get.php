@@ -55,7 +55,7 @@ function ciniki_subscriptions_get($ciniki) {
 		return $rc;
 	}
 	if( !isset($rc['subscription']) ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'390', 'msg'=>'Invalid subscription'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'390', 'msg'=>'Invalid subscription'));
 	}
 	return array('stat'=>'ok', 'subscription'=>$rc['subscription']);
 }
