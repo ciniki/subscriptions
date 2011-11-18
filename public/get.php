@@ -46,7 +46,7 @@ function ciniki_subscriptions_get($ciniki) {
 	$datetime_format = ciniki_users_datetimeFormat($ciniki);
 
 	$strsql = "SELECT id, name, description "
-		. "FROM subscriptions "
+		. "FROM ciniki_subscriptions "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' ";
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');

@@ -58,7 +58,7 @@ function ciniki_subscriptions_add($ciniki) {
 	//
 	// Add the subscription to the database
 	//
-	$strsql = "INSERT INTO subscriptions (business_id, flags, name, description, "
+	$strsql = "INSERT INTO ciniki_subscriptions (business_id, flags, name, description, "
 		. "date_added, last_updated) VALUES ("
 		. "'" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "', "
 		. "0, "
@@ -87,7 +87,7 @@ function ciniki_subscriptions_add($ciniki) {
 	foreach($changelog_fields as $field) {
 		if( isset($args[$field]) && $args[$field] != '' ) {
 			$rc = ciniki_core_dbAddChangeLog($ciniki, 'subscriptions', $args['business_id'], 
-				'subscriptions', $subscription_id, $field, $args[$field]);
+				'ciniki_subscriptions', $subscription_id, $field, $args[$field]);
 		}
 	}
 

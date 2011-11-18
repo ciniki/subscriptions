@@ -47,18 +47,19 @@ function ciniki_subscriptions_list($ciniki) {
 	// if no rows found, then return empty array
 	//
 	if( isset($args['customer_id']) && $args['customer_id'] > 0 ) {
-		$strsql = "SELECT subscriptions.id, subscriptions.name, subscriptions.description, subscription_customers.status "
-			. "FROM subscriptions "
-			. "LEFT JOIN subscription_customers ON (subscriptions.id = subscription_customers.subscription_id "
-				. "AND subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $args['customer_id']) . "') "
-			. "WHERE subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-			. "ORDER BY subscriptions.name "
+		$strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, "
+			. "ciniki_subscriptions.description, ciniki_subscription_customers.status "
+			. "FROM ciniki_subscriptions "
+			. "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
+				. "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $args['customer_id']) . "') "
+			. "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "ORDER BY ciniki_subscriptions.name "
 			. "";
 	} else {
-		$strsql = "SELECT subscriptions.id, subscriptions.name, subscriptions.description "
-			. "FROM subscriptions "
-			. "WHERE subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-			. "ORDER BY subscriptions.name "
+		$strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description "
+			. "FROM ciniki_subscriptions "
+			. "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "ORDER BY ciniki_subscriptions.name "
 			. "";
 	}
 

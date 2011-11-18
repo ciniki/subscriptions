@@ -16,7 +16,7 @@
 # date_added:		The date and time the record was added.
 # last_updated:		The date and time the record was last updated.
 #
-create table subscription_customers (
+create table ciniki_subscription_customers (
 	subscription_id int not null,				# links to subscriptions tables
 	customer_id int not null,					# links to users table
 	status tinyint unsigned not null,

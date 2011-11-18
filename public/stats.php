@@ -45,10 +45,11 @@ function ciniki_subscriptions_stats($ciniki) {
 	// Get the number of orders in each status for the business, 
 	// if no rows found, then return empty array
 	//
-	$strsql = "SELECT subscriptions.id, name, description, COUNT(subscription_customers.customer_id) AS count FROM subscriptions "
-		. "LEFT JOIN subscription_customers ON (subscriptions.id = subscription_customers.subscription_id AND subscription_customers.status = 1) "
+	$strsql = "SELECT ciniki_subscriptions.id, name, description, COUNT(ciniki_subscription_customers.customer_id) AS count "
+		. "FROM ciniki_subscriptions "
+		. "LEFT JOIN ciniki_subscription_customers ON (subscriptions.id = subscription_customers.subscription_id AND ciniki_subscription_customers.status = 1) "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "GROUP BY subscriptions.id "
+		. "GROUP BY ciniki_subscriptions.id "
 		. "ORDER BY name "
 		. "";
 	$rc = ciniki_core_dbRspQuery($ciniki, $strsql, 'subscriptions', 'subscriptions', 'subscription', array('stat'=>'ok', 'subscriptions'=>array()));

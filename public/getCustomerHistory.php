@@ -2,7 +2,7 @@
 //
 // Description
 // -----------
-// This function will get the history of a field from the core_change_logs table.
+// This function will get the history of a field from the ciniki_core_change_logs table.
 // This allows the user to view what has happened to a data element, and if they
 // choose, revert to a previous version.
 //
@@ -54,6 +54,6 @@ function ciniki_subscriptions_getCustomerHistory($ciniki) {
 	}
 
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbGetChangeLog.php');
-	return ciniki_core_dbGetChangeLog($ciniki, $args['business_id'], 'subscription_customers', $args['subscription_id'] . '-' . $args['customer_id'], $args['field'], 'subscriptions');
+	return ciniki_core_dbGetChangeLog($ciniki, $args['business_id'], 'ciniki_subscription_customers', $args['subscription_id'] . '-' . $args['customer_id'], $args['field'], 'subscriptions');
 }
 ?>

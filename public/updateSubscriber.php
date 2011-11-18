@@ -67,7 +67,7 @@ function ciniki_subscriptions_updateSubscriber($ciniki) {
 	//
 	// Update the customers subscription
 	//
-	$strsql = "INSERT INTO subscription_customers (subscription_id, customer_id, status, date_added, last_updated "
+	$strsql = "INSERT INTO ciniki_subscription_customers (subscription_id, customer_id, status, date_added, last_updated "
 		. ") VALUES ("
 		. "'" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['customer_id']) . "', "
@@ -87,7 +87,7 @@ function ciniki_subscriptions_updateSubscriber($ciniki) {
 	//
 	// Update the last_updated for the subscription
 	//
-	$strsql = "UPDATE subscriptions SET last_updated = UTC_TIMESTAMP() "
+	$strsql = "UPDATE ciniki_subscriptions SET last_updated = UTC_TIMESTAMP() "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' ";
 	$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'subscriptions');
@@ -97,7 +97,7 @@ function ciniki_subscriptions_updateSubscriber($ciniki) {
 	}
 
 	ciniki_core_dbAddChangeLog($ciniki, 'subscriptions', $args['business_id'], 
-		'subscription_customers', $args['subscription_id'] . '-' . $args['customer_id'], 'status', $args['status']);
+		'ciniki_subscription_customers', $args['subscription_id'] . '-' . $args['customer_id'], 'status', $args['status']);
 
 
 	//

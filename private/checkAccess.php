@@ -6,10 +6,6 @@
 // proper permissions to access or change the data.  This function
 // must be called by all public API functions to ensure security.
 //
-// Info
-// ----
-// Status: 			beta
-//
 // Arguments
 // ---------
 // business_id: 		The ID of the business the request is for.
@@ -30,12 +26,12 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 	// Check the business is active
 	// Get the ruleset for this module
 	//
-	$strsql = "SELECT ruleset FROM businesses, business_modules "
-		. "WHERE businesses.id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND businesses.status = 1 "														// Business is active
-		. "AND businesses.id = business_modules.business_id "
-		. "AND business_modules.package = 'ciniki' "
-		. "AND business_modules.module = 'subscriptions' "
+	$strsql = "SELECT ruleset FROM ciniki_businesses, ciniki_business_modules "
+		. "WHERE ciniki_businesses.id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND ciniki_businesses.status = 1 "														// Business is active
+		. "AND ciniki_businesses.id = ciniki_business_modules.business_id "
+		. "AND ciniki_business_modules.package = 'ciniki' "
+		. "AND ciniki_business_modules.module = 'subscriptions' "
 		. "";
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'businesses', 'module');
@@ -78,7 +74,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 	// Check the subscription_id is attached to the business
 	//
 	if( $subscription_id > 0 ) {
-		$strsql = "SELECT id, business_id FROM subscriptions "
+		$strsql = "SELECT id, business_id FROM ciniki_subscriptions "
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 			. "AND id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' "
 			. "";
@@ -116,7 +112,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 		// Compare the session users bitmask, with the bitmask specified in the rules
 		// If when OR'd together, any bits are set, they have access.
 		//
-		$strsql = sprintf("SELECT business_id, user_id FROM business_users "
+		$strsql = sprintf("SELECT business_id, user_id FROM ciniki_business_users "
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 			. "AND user_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['user']['id']) . "' "
 			. "AND (groups & 0x%x) > 0 ", ciniki_core_dbQuote($ciniki, $rules['business_group']));
