@@ -32,9 +32,9 @@ function ciniki_subscriptions_updateSubscriber($ciniki) {
     $args = $rc['args'];
    
 	$status = 0;
-	if( $args['status'] == 'Subscribed' ) {
+	if( $args['status'] == 'on' ) {
 		$status = 1;
-	} elseif( $args['status'] == 'Unsubscribed' ) {
+	} elseif( $args['status'] == 'off' ) {
 		$status = 99;
 	} else {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'392', 'msg'=>'Invalid status'));
