@@ -14,6 +14,7 @@
 # Fields
 # ------
 # id:				The subscription id.
+# uuid:				The Universal Unique ID.
 # business_id:		The business the subscription is attached to.
 # flags:			The flags for this subscription list.  *future*
 #
@@ -34,6 +35,7 @@
 #
 create table ciniki_subscriptions (
 	id int not null auto_increment,
+	uuid binary(16) not null,
 	business_id int not null,
 	flags tinyint unsigned not null,
 	name varchar(150) not null,
@@ -41,5 +43,6 @@ create table ciniki_subscriptions (
 	date_added datetime not null,
 	last_updated datetime not null,
 	primary key (id),
+	unique index (uuid),
 	index (business_id)
-) ENGINE='InnoDB', COMMENT='v1.01';
+) ENGINE='InnoDB', COMMENT='v1.02';

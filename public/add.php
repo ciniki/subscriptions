@@ -58,8 +58,9 @@ function ciniki_subscriptions_add($ciniki) {
 	//
 	// Add the subscription to the database
 	//
-	$strsql = "INSERT INTO ciniki_subscriptions (business_id, flags, name, description, "
+	$strsql = "INSERT INTO ciniki_subscriptions (uuid, business_id, flags, name, description, "
 		. "date_added, last_updated) VALUES ("
+		. "UUID(), "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "', "
 		. "0, "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['name']) . "', "
