@@ -17,22 +17,12 @@
 function ciniki_subscriptions_getRulesets($ciniki) {
 
 	//
-	// Permissions can be in the form of=> 
-	//		- owners, any employee in the group 0x0001 (owner) in business_users.
-	//		- group, any employee in the group 0x8000 (subscriptions) in business_users.
-	//		- employee, any employee in the group 0x0002 (employee) in business_users.
-	//		- employees, customer, customers
-	//
-	// - business_group - 0x8001, (any owners) or (employees in group Bug Tracker)
-	// - business_group - 0x8003, (any owners) or (any employees) or (employees in group Bug Tracker)
-	// - business_group - blank/non-existent, ignored
-	//
-	// business_group rules are OR'd together with customers rules
+	// permission_groups rules are OR'd together with customers rules
 	//
 	// - customers - 'any', (any customers of the business)
 	// - customers - 'self', (the session user_id must be the same as requested user_id)
 	//
-	// *note* A function can only be allowed to customers, if there is no business_group rule.
+	// *note* A function can only be allowed to customers, if there is no permission_groups rule.
 	//
 
 	return array(
@@ -61,7 +51,7 @@ function ciniki_subscriptions_getRulesets($ciniki) {
 				'employees'=>'all tasks',
 				'customers'=>'no access.'
 				),
-			'default'=>array('business_group'=>0x8003),
+			'default'=>array('permission_groups'=>array('ciniki.owners', 'ciniki.employees', 'ciniki.subscriptions')),
 			'methods'=>array()
 			),
 
@@ -76,7 +66,7 @@ function ciniki_subscriptions_getRulesets($ciniki) {
 				'employees'=>'all tasks',
 				'customers'=>'no access.'
 				),
-			'default'=>array('business_group'=>0x8000),
+			'default'=>array('permission_groups'=>array('ciniki.subscriptions')),
 			'methods'=>array()
 			),
 	);
