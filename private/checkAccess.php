@@ -37,7 +37,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-	if( !isset($rc['module']) || !isset($rc['module']['ruleset']) || $rc['module']['ruleset'] == '' ) {
+	if( !isset($rc['module']) || !isset($rc['module']['ruleset']) ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'382', 'msg'=>'Access denied.'));
 	}
 
