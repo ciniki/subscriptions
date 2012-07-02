@@ -18,10 +18,11 @@
 # business_id:		The business the subscription is attached to.
 # flags:			The flags for this subscription list.  *future*
 #
-#					0x01 - auto subscribe new customers
-#					0x02 - email - send mailings by email, if customer subscribed by email
-#					0x04 - postal - send mailings by postal, if customer subscribed by email
-#					0x08 - unused
+#					0x01 - public subscription, available for customers to subscribe/unsubscribe on website
+#					0x02 - auto subscribe new customers
+#					0x04 - email - send mailings by email, if customer subscribed by email
+#					0x08 - postal - send mailings by postal, if customer subscribed by email
+#					0x10 - unused
 #
 # name:				The name for the subscription.  This field will
 # 					be displayed to the customer.

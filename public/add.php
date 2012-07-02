@@ -24,6 +24,7 @@ function ciniki_subscriptions_add($ciniki) {
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
 		'name'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No name specified'),
+		'flags'=>array('required'=>'no', 'blank'=>'no', 'default'=>'0', 'errmsg'=>'No name specified'),
         'description'=>array('required'=>'no', 'default'=>'', 'blank'=>'yes', 'errmsg'=>'No description specified'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -62,7 +63,7 @@ function ciniki_subscriptions_add($ciniki) {
 		. "date_added, last_updated) VALUES ("
 		. "UUID(), "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "', "
-		. "0, "
+		. "'" . ciniki_core_dbQuote($ciniki, $args['flags']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['name']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['description']) . "', "
 		. "UTC_TIMESTAMP(), UTC_TIMESTAMP())";
@@ -83,6 +84,7 @@ function ciniki_subscriptions_add($ciniki) {
 
 	$changelog_fields = array(
 		'name',
+		'flags',
 		'description',
 		);
 	foreach($changelog_fields as $field) {

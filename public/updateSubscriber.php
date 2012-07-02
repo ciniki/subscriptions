@@ -31,15 +31,6 @@ function ciniki_subscriptions_updateSubscriber($ciniki) {
     }   
     $args = $rc['args'];
    
-	$status = 0;
-	if( $args['status'] == 'on' ) {
-		$status = 1;
-	} elseif( $args['status'] == 'off' ) {
-		$status = 99;
-	} else {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'392', 'msg'=>'Invalid status'));
-	}
-
     //  
     // Make sure this module is activated, and
     // check permission to run this function for this business
@@ -92,11 +83,11 @@ function ciniki_subscriptions_updateSubscriber($ciniki) {
 		. ") VALUES ("
 		. "'" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['customer_id']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $status) . "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $args['status']) . "', "
 		. "UTC_TIMESTAMP(), UTC_TIMESTAMP() "
 		. ") "
 		. "ON DUPLICATE KEY UPDATE "
-		. "status = '" . ciniki_core_dbQuote($ciniki, $status) . "', "
+		. "status = '" . ciniki_core_dbQuote($ciniki, $args['status']) . "', "
 		. "last_updated = UTC_TIMESTAMP()"
 		. "";
 	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'subscriptions');

@@ -24,6 +24,7 @@ function ciniki_subscriptions_update($ciniki) {
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
         'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No customer specified'), 
         'name'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No prefix specified'), 
+        'flags'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No flags specified'), 
         'description'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No first name specified'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -67,6 +68,7 @@ function ciniki_subscriptions_update($ciniki) {
 	$changelog_fields = array(
 		'name',
 		'description',
+		'flags',
 		);
 	foreach($changelog_fields as $field) {
 		if( isset($args[$field]) ) {
