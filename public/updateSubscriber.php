@@ -30,6 +30,10 @@ function ciniki_subscriptions_updateSubscriber($ciniki) {
         return $rc;
     }   
     $args = $rc['args'];
+
+	if( $args['status'] != 1 && $args['status'] != 60 ) {
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'120', 'msg'=>'Invalid status'));
+	}
    
     //  
     // Make sure this module is activated, and
