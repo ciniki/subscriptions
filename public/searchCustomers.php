@@ -64,6 +64,6 @@ function ciniki_subscriptions_searchCustomers($ciniki) {
 	}
 
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbRspQuery.php');
-	return ciniki_core_dbRspQuery($ciniki, $strsql, 'subscriptions', 'customers', 'customer', array('stat'=>'ok', 'customers'=>array()));
+	return ciniki_core_dbRspQuery($ciniki, $strsql, 'ciniki.subscriptions', 'customers', 'customer', array('stat'=>'ok', 'customers'=>array()));
 }
 ?>

@@ -51,7 +51,7 @@ function ciniki_subscriptions_add($ciniki) {
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbInsert.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbAddModuleHistory.php');
-	$rc = ciniki_core_dbTransactionStart($ciniki, 'subscriptions');
+	$rc = ciniki_core_dbTransactionStart($ciniki, 'ciniki.subscriptions');
 	if( $rc['stat'] != 'ok' ) { 
 		return $rc;
 	}   
@@ -67,13 +67,13 @@ function ciniki_subscriptions_add($ciniki) {
 		. "'" . ciniki_core_dbQuote($ciniki, $args['name']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['description']) . "', "
 		. "UTC_TIMESTAMP(), UTC_TIMESTAMP())";
-	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'subscriptions');
+	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.subscriptions');
 	if( $rc['stat'] != 'ok' ) { 
-		ciniki_core_dbTransactionRollback($ciniki, 'subscriptions');
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
 		return $rc;
 	}
 	if( !isset($rc['insert_id']) || $rc['insert_id'] < 1 ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'subscriptions');
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'387', 'msg'=>'Unable to add subscription'));
 	}
 	$subscription_id = $rc['insert_id'];
@@ -89,7 +89,7 @@ function ciniki_subscriptions_add($ciniki) {
 		);
 	foreach($changelog_fields as $field) {
 		if( isset($args[$field]) && $args[$field] != '' ) {
-			$rc = ciniki_core_dbAddModuleHistory($ciniki, 'subscriptions', 'ciniki_subscription_history', $args['business_id'], 
+			$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $args['business_id'], 
 				1, 'ciniki_subscriptions', $subscription_id, $field, $args[$field]);
 		}
 	}
@@ -97,10 +97,17 @@ function ciniki_subscriptions_add($ciniki) {
 	//
 	// Commit the database changes
 	//
-    $rc = ciniki_core_dbTransactionCommit($ciniki, 'subscriptions');
+    $rc = ciniki_core_dbTransactionCommit($ciniki, 'ciniki.subscriptions');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
+
+	//
+	// Update the last_change date in the business modules
+	// Ignore the result, as we don't want to stop user updates if this fails.
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
+	ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'subscriptions');
 
 	return array('stat'=>'ok', 'id'=>$subscription_id);
 }

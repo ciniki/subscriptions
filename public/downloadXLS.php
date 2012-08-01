@@ -137,7 +137,7 @@ function ciniki_subscriptions_downloadXLS($ciniki) {
 
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuery.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbFetchHashRow.php');
-	$rc = ciniki_core_dbQuery($ciniki, $strsql, 'subscriptions');
+	$rc = ciniki_core_dbQuery($ciniki, $strsql, 'ciniki.subscriptions');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}

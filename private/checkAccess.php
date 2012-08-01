@@ -8,7 +8,11 @@
 //
 // Arguments
 // ---------
+// ciniki:
 // business_id: 		The ID of the business the request is for.
+// method:				The requested method.
+// subscription_id:		The ID of the subscription the request is for.  Only checked if 
+//						subscription_id is specified and greater than zero.
 // 
 // Returns
 // -------
@@ -70,7 +74,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 			. "AND id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' "
 			. "";
-		$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'subscriptions', 'subscription');
+		$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.subscriptions', 'subscription');
 		if( $rc['stat'] != 'ok' ) {
 			return $rc;
 		}
@@ -103,7 +107,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 			. "AND user_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['user']['id']) . "' "
 			. "AND CONCAT_WS('.', package, permission_group) IN ('" . implode("','", $rules['permission_groups']) . "') "
 			. "";
-		$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'businesses', 'user');
+		$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.businesses', 'user');
 		if( $rc['stat'] != 'ok' ) {
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'385', 'msg'=>'Access denied.', 'err'=>$rc['err']));
 		}

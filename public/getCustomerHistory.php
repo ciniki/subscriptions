@@ -62,7 +62,7 @@ function ciniki_subscriptions_getCustomerHistory($ciniki) {
 		. "AND ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
 		. "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $args['customer_id']) . "' "
 		. "";
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'subscriptions', 'subscription');
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.subscriptions', 'subscription');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
@@ -72,6 +72,6 @@ function ciniki_subscriptions_getCustomerHistory($ciniki) {
 	$customer_subscription_id = $rc['subscription']['id'];
 
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbGetModuleHistory.php');
-	return ciniki_core_dbGetModuleHistory($ciniki, 'subscriptions', 'ciniki_subscription_history', $args['business_id'], 'ciniki_subscription_customers', $customer_subscription_id, $args['field']);
+	return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $args['business_id'], 'ciniki_subscription_customers', $customer_subscription_id, $args['field']);
 }
 ?>

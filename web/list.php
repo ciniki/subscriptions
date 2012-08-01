@@ -29,7 +29,7 @@ function ciniki_subscriptions_web_list($ciniki, $settings, $business_id) {
 	}
 
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'subscriptions', array(
+	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.subscriptions', array(
 		array('container'=>'subscriptions', 'fname'=>'id', 'name'=>'subscription',
 			'fields'=>array('id', 'name', 'description', 'subscribed')),
 		));
