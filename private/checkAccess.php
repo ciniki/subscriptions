@@ -21,7 +21,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 	//
 	// Check if the business is active and the module is enabled
 	//
-	require_once($ciniki['config']['core']['modules_dir'] . '/businesses/private/checkModuleAccess.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'checkModuleAccess');
 	$rc = ciniki_businesses_checkModuleAccess($ciniki, $business_id, 'ciniki', 'subscriptions');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -35,7 +35,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 	//
 	// Load the rulesets for this module
 	//
-	require_once($ciniki['config']['core']['modules_dir'] . '/subscriptions/private/getRulesets.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'getRulesets');
 	$rulesets = ciniki_subscriptions_getRuleSets($ciniki);
 
 	//

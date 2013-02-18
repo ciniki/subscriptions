@@ -21,7 +21,7 @@ function ciniki_subscriptions_downloadXLS($ciniki) {
 	//
 	// Find all the required and optional arguments
 	//
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/prepareArgs.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
 	$rc = ciniki_core_prepareArgs($ciniki, 'no', array(
 		'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
 		'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No subscription specified'), 
@@ -45,7 +45,7 @@ function ciniki_subscriptions_downloadXLS($ciniki) {
 	//
 	// Check access to business_id, and the subscription
 	//
-	require_once($ciniki['config']['core']['modules_dir'] . '/subscriptions/private/checkAccess.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
 	$ac = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.downloadXLS', $args['subscription_id']);
 	if( $ac['stat'] != 'ok' ) {
 		return $ac;
@@ -54,7 +54,7 @@ function ciniki_subscriptions_downloadXLS($ciniki) {
 	//
 	// Load the subscription information
 	//
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 	if( $args['mailing_address'] == 'Yes' ) {
 		$strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, "
 			. "ciniki_customers.id AS customer_id, CONCAT_WS(' ', prefix, first, middle, last, suffix) AS customer_name, "
@@ -135,8 +135,8 @@ function ciniki_subscriptions_downloadXLS($ciniki) {
 		array_push($cols, array('name'=>'Email', 'col'=>'alternate_email'));
 	}
 
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuery.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbFetchHashRow.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuery');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbFetchHashRow');
 	$rc = ciniki_core_dbQuery($ciniki, $strsql, 'ciniki.subscriptions');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;

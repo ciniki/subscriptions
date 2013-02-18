@@ -32,7 +32,7 @@ function ciniki_subscriptions_getCustomerHistory($ciniki) {
 	//
 	// Find all the required and optional arguments
 	//
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/prepareArgs.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
 	$rc = ciniki_core_prepareArgs($ciniki, 'no', array(
 		'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
 		'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No subscription specified'), 
@@ -47,7 +47,7 @@ function ciniki_subscriptions_getCustomerHistory($ciniki) {
 	//
 	// Check access to business_id as owner, or sys admin
 	//
-	require_once($ciniki['config']['core']['modules_dir'] . '/subscriptions/private/checkAccess.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
 	$rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.getCustomerHistory', 0);
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -71,7 +71,7 @@ function ciniki_subscriptions_getCustomerHistory($ciniki) {
 	}
 	$customer_subscription_id = $rc['subscription']['id'];
 
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbGetModuleHistory.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistory');
 	return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $args['business_id'], 'ciniki_subscription_customers', $customer_subscription_id, $args['field']);
 }
 ?>
