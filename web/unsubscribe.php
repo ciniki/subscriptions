@@ -8,7 +8,7 @@
 // -------
 // <rsp stat='ok' id='34' />
 //
-function ciniki_subscriptions_web_unsubscribe($ciniki, $settings, $business_id, $subscription_id) {
+function ciniki_subscriptions_web_unsubscribe($ciniki, $settings, $business_id, $subscription_id, $customer_id) {
 
 	//  
 	// Turn off autocommit
@@ -26,31 +26,74 @@ function ciniki_subscriptions_web_unsubscribe($ciniki, $settings, $business_id, 
 	}   
 
 	//
-	// Update the customers subscription
+	// Check if already in table
 	//
-	$strsql = "INSERT INTO ciniki_subscription_customers (subscription_id, customer_id, status, date_added, last_updated "
-		. ") VALUES ("
-		. "'" . ciniki_core_dbQuote($ciniki, $subscription_id) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $ciniki['session']['customer']['id']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, '60') . "', "
-		. "UTC_TIMESTAMP(), UTC_TIMESTAMP() "
-		. ") "
-		. "ON DUPLICATE KEY UPDATE "
-		. "status = '" . ciniki_core_dbQuote($ciniki, '60') . "', "
-		. "last_updated = UTC_TIMESTAMP()"
+	$strsql = "SELECT id, status "
+		. "FROM ciniki_subscription_customers "
+		. "WHERE subscription_id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' "
+		. "AND customer_id = '" . ciniki_core_dbQuote($ciniki, $customer_id) . "' "
 		. "";
-	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.subscriptions');
-	if( $rc['stat'] != 'ok' ) { 
-		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.mail', 'subscription');
+	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-	$new_customer_subscription_id = $rc['insert_id'];
+	if( isset($rc['subscription']) ) {
+		$customer_subscription_id = $rc['subscription']['id'];
+		$strsql = "UPDATE ciniki_subscription_customers SET status = 60 "
+			. "WHERE subscription_id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' "
+			. "AND customer_id = '" . ciniki_core_dbQuote($ciniki, $customer_id) . "' "
+			. "";
+		$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.subscriptions');
+		if( $rc['stat'] != 'ok' ) { 
+			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
+			return $rc;
+		}
+		ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
+			2, 'ciniki_subscription_customers', $customer_subscription_id, 'status', '60');
+	} else {
+		//
+		// Get a uuid
+		//
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUUID');
+		$rc = ciniki_core_dbUUID($ciniki, 'ciniki.mail');
+		if( $rc['stat'] != 'ok' ) {
+			return $rc;
+		}
+		$uuid = $rc['uuid'];
 
-	//
-	// Log the change in the database
-	//
-	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
-		2, 'ciniki_subscription_customers', $new_customer_subscription_id, 'status', '60');
+		//
+		// Update the customers subscription
+		//
+		$strsql = "INSERT INTO ciniki_subscription_customers (uuid, business_id, subscription_id, customer_id, status, date_added, last_updated "
+			. ") VALUES ("
+			. "'" . ciniki_core_dbQuote($ciniki, $uuid) . "', "
+			. "'" . ciniki_core_dbQuote($ciniki, $business_id) . "', "
+			. "'" . ciniki_core_dbQuote($ciniki, $subscription_id) . "', "
+			. "'" . ciniki_core_dbQuote($ciniki, $customer_id) . "', "
+			. "'" . ciniki_core_dbQuote($ciniki, '60') . "', "
+			. "UTC_TIMESTAMP(), UTC_TIMESTAMP() "
+			. ") "
+			. "";
+		$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.subscriptions');
+		if( $rc['stat'] != 'ok' ) { 
+			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
+			return $rc;
+		}
+		$customer_subscription_id = $rc['insert_id'];
+
+		//
+		// Log the change in the database
+		//
+		ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
+			1, 'ciniki_subscription_customers', $customer_subscription_id, 'uuid', $uuid);
+		ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
+			1, 'ciniki_subscription_customers', $customer_subscription_id, 'subscription_id', $subscription_id);
+		ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
+			1, 'ciniki_subscription_customers', $customer_subscription_id, 'customer_id', $customer_id);
+		ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
+			1, 'ciniki_subscription_customers', $customer_subscription_id, 'status', '60');
+	}
+
 
 	//
 	// Update the last_updated for the subscription
@@ -78,6 +121,9 @@ function ciniki_subscriptions_web_unsubscribe($ciniki, $settings, $business_id, 
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
 	ciniki_businesses_updateModuleChangeDate($ciniki, $business_id, 'ciniki', 'subscriptions');
+
+	$ciniki['syncqueue'][] = array('push'=>'ciniki.subscriptions.customer', 
+		'args'=>array('id'=>$customer_subscription_id));
 
 	return array('stat'=>'ok');
 }
