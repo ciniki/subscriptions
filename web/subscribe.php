@@ -36,7 +36,7 @@ function ciniki_subscriptions_web_subscribe($ciniki, $settings, $business_id, $s
 		. "UTC_TIMESTAMP(), UTC_TIMESTAMP() "
 		. ") "
 		. "ON DUPLICATE KEY UPDATE "
-		. "status = '" . ciniki_core_dbQuote($ciniki, '1') . "', "
+		. "status = '" . ciniki_core_dbQuote($ciniki, '10') . "', "
 		. "last_updated = UTC_TIMESTAMP()"
 		. "";
 	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.subscriptions');
@@ -50,7 +50,7 @@ function ciniki_subscriptions_web_subscribe($ciniki, $settings, $business_id, $s
 	// Log the change in the database
 	//
 	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
-		2, 'ciniki_subscription_customers', $new_customer_subscription_id, 'status', '1');
+		2, 'ciniki_subscription_customers', $new_customer_subscription_id, 'status', '10');
 
 	//
 	// Update the last_updated for the subscription

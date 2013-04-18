@@ -45,10 +45,13 @@ function ciniki_subscriptions_stats($ciniki) {
 	// Get the number of orders in each status for the business, 
 	// if no rows found, then return empty array
 	//
-	$strsql = "SELECT ciniki_subscriptions.id, name, description, COUNT(ciniki_subscription_customers.customer_id) AS count "
+	$strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, "
+		. "ciniki_subscriptions.description, "
+		. "COUNT(ciniki_subscription_customers.customer_id) AS count "
 		. "FROM ciniki_subscriptions "
-		. "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id AND ciniki_subscription_customers.status = 1) "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
+			. "AND ciniki_subscription_customers.status = 10 ) "
+		. "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "GROUP BY ciniki_subscriptions.id "
 		. "ORDER BY name "
 		. "";

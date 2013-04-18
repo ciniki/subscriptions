@@ -13,7 +13,7 @@ function ciniki_subscriptions_web_list($ciniki, $settings, $business_id) {
 	
 	if( isset($ciniki['session']['customer']['id']) && $ciniki['session']['customer']['id'] > 0 ) {
 		$strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, "
-			. "IF(ciniki_subscription_customers.status=1, 'yes', 'no') AS subscribed "
+			. "IF(ciniki_subscription_customers.status=10, 'yes', 'no') AS subscribed "
 			. "FROM ciniki_subscriptions "
 			. "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
 				. "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['customer']['id']) . "') "
