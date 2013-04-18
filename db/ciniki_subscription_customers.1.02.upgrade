@@ -1,0 +1,9 @@
+#
+# This file will upgrade the database table subscriptions to version 1.02.
+#
+ALTER TABLE ciniki_subscription_customers ADD COLUMN uuid char(36) not null after id;
+UPDATE ciniki_subscription_customers SET uuid = uuid();
+ALTER TABLE ciniki_subscription_customers ADD COLUMN business_id int not null AFTER uuid;
+UPDATE ciniki_subscription_customers SET business_id = (SELECT business_id FROM ciniki_subscriptions WHERE ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id);
+CREATE UNIQUE INDEX business_id ON ciniki_subscription_customers (business_id, uuid, last_updated);
+ALTER TABLE ciniki_subscription_customers COMMENT='v1.02';
