@@ -107,7 +107,7 @@ function ciniki_subscriptions_updateSubscriber($ciniki) {
 			. "'" . ciniki_core_dbQuote($ciniki, $args['uuid']) . "', "
 			. "'" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "', "
 			. "'" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "', "
-			. "'" . ciniki_core_dbQuote($ciniki, $args['customer_id']) . "', ";
+			. "'" . ciniki_core_dbQuote($ciniki, $args['customer_id']) . "', "
 			. "'" . ciniki_core_dbQuote($ciniki, $args['status']) . "', "
 			. "UTC_TIMESTAMP(), UTC_TIMESTAMP() "
 			. ") "
