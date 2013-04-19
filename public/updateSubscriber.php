@@ -24,7 +24,8 @@ function ciniki_subscriptions_updateSubscriber($ciniki) {
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
         'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'), 
         'customer_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Customer'), 
-        'status'=>array('required'=>'yes', 'blank'=>'no', 'validlist'=>array('10','60'), 'name'=>'Status'), 
+        'status'=>array('required'=>'no', 'blank'=>'no', 'validlist'=>array('10','60'), 'name'=>'Status'), 
+        'flags'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Flags'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -106,7 +107,7 @@ function ciniki_subscriptions_updateSubscriber($ciniki) {
 			. "'" . ciniki_core_dbQuote($ciniki, $args['uuid']) . "', "
 			. "'" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "', "
 			. "'" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "', "
-			. "'" . ciniki_core_dbQuote($ciniki, $args['customer_id']) . "', "
+			. "'" . ciniki_core_dbQuote($ciniki, $args['customer_id']) . "', ";
 			. "'" . ciniki_core_dbQuote($ciniki, $args['status']) . "', "
 			. "UTC_TIMESTAMP(), UTC_TIMESTAMP() "
 			. ") "

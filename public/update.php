@@ -15,7 +15,7 @@
 // -------
 // <rsp stat='ok' id='34' />
 //
-function ciniki_subscriptions_update($ciniki) {
+function ciniki_subscriptions_update(&$ciniki) {
     //  
     // Find all the required and optional arguments
     //  
@@ -41,6 +41,7 @@ function ciniki_subscriptions_update($ciniki) {
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
+	$modules = $rc['modules'];
 
 	//  
 	// Turn off autocommit
@@ -103,6 +104,18 @@ function ciniki_subscriptions_update($ciniki) {
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
 	ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'subscriptions');
+
+	// 
+	// Update the web settings
+	//
+	if( isset($modules['ciniki.web']) ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'web', 'private', 'settingsUpdateSubscriptions');
+		$rc = ciniki_web_settingsUpdateSubscriptions($ciniki, $modules, $args['business_id']);
+		if( $rc['stat'] != 'ok' ) {
+			// Don't return error code to user, they successfully updated the record
+			error_log("ERR: " . $rc['code'] . ' - ' . $rc['msg']);
+		}
+	}
 
 	return array('stat'=>'ok');
 }

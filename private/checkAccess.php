@@ -42,7 +42,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 	// Sysadmins are allowed full access
 	//
 	if( ($ciniki['session']['user']['perms'] & 0x01) == 0x01 ) {
-		return array('stat'=>'ok');
+		return array('stat'=>'ok', 'modules'=>$rc['modules']);
 	}
 
 	//
@@ -118,7 +118,7 @@ function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subsc
 		//
 		if( isset($rc['rows']) && isset($rc['rows'][0]) 
 			&& $rc['rows'][0]['user_id'] > 0 && $rc['rows'][0]['user_id'] == $ciniki['session']['user']['id'] ) {
-			return array('stat'=>'ok');
+			return array('stat'=>'ok', 'modules'=>$rc['modules']);
 		}
 	}
 
