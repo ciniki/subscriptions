@@ -37,19 +37,23 @@ function ciniki_subscriptions_web_unsubscribe($ciniki, $settings, $business_id, 
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
+	$db_updated = 0;
 	if( isset($rc['subscription']) ) {
 		$customer_subscription_id = $rc['subscription']['id'];
-		$strsql = "UPDATE ciniki_subscription_customers SET status = 60 "
-			. "WHERE subscription_id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' "
-			. "AND customer_id = '" . ciniki_core_dbQuote($ciniki, $customer_id) . "' "
-			. "";
-		$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.subscriptions');
-		if( $rc['stat'] != 'ok' ) { 
-			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
-			return $rc;
+		if( $rc['subscription']['status'] < 60 ) {
+			$strsql = "UPDATE ciniki_subscription_customers SET status = 60 "
+				. "WHERE subscription_id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' "
+				. "AND customer_id = '" . ciniki_core_dbQuote($ciniki, $customer_id) . "' "
+				. "";
+			$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.subscriptions');
+			if( $rc['stat'] != 'ok' ) { 
+				ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
+				return $rc;
+			}
+			ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
+				2, 'ciniki_subscription_customers', $customer_subscription_id, 'status', '60');
+			$db_updated = 1;
 		}
-		ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
-			2, 'ciniki_subscription_customers', $customer_subscription_id, 'status', '60');
 	} else {
 		//
 		// Get a uuid
@@ -92,19 +96,22 @@ function ciniki_subscriptions_web_unsubscribe($ciniki, $settings, $business_id, 
 			1, 'ciniki_subscription_customers', $customer_subscription_id, 'customer_id', $customer_id);
 		ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
 			1, 'ciniki_subscription_customers', $customer_subscription_id, 'status', '60');
+		$db_updated = 1;
 	}
 
 
 	//
 	// Update the last_updated for the subscription
 	//
-	$strsql = "UPDATE ciniki_subscriptions SET last_updated = UTC_TIMESTAMP() "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' ";
-	$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.subscriptions');
-	if( $rc['stat'] != 'ok' ) { 
-		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
-		return $rc;
+	if( $db_updated > 0 ) {
+		$strsql = "UPDATE ciniki_subscriptions SET last_updated = UTC_TIMESTAMP() "
+			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+			. "AND id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' ";
+		$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.subscriptions');
+		if( $rc['stat'] != 'ok' ) { 
+			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
+			return $rc;
+		}
 	}
 
 	//
@@ -119,11 +126,13 @@ function ciniki_subscriptions_web_unsubscribe($ciniki, $settings, $business_id, 
 	// Update the last_change date in the business modules
 	// Ignore the result, as we don't want to stop user updates if this fails.
 	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
-	ciniki_businesses_updateModuleChangeDate($ciniki, $business_id, 'ciniki', 'subscriptions');
+	if( $db_updated > 0 ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
+		ciniki_businesses_updateModuleChangeDate($ciniki, $business_id, 'ciniki', 'subscriptions');
 
-	$ciniki['syncqueue'][] = array('push'=>'ciniki.subscriptions.customer', 
-		'args'=>array('id'=>$customer_subscription_id));
+		$ciniki['syncqueue'][] = array('push'=>'ciniki.subscriptions.customer', 
+			'args'=>array('id'=>$customer_subscription_id));
+	}
 
 	return array('stat'=>'ok');
 }
