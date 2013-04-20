@@ -8,7 +8,7 @@
 // -------
 // <rsp stat='ok' id='34' />
 //
-function ciniki_subscriptions_web_unsubscribe($ciniki, $settings, $business_id, $subscription_id, $customer_id) {
+function ciniki_subscriptions_web_unsubscribe(&$ciniki, $settings, $business_id, $subscription_id, $customer_id) {
 
 	//  
 	// Turn off autocommit
@@ -28,10 +28,17 @@ function ciniki_subscriptions_web_unsubscribe($ciniki, $settings, $business_id, 
 	//
 	// Check if already in table
 	//
-	$strsql = "SELECT id, status "
+	$strsql = "SELECT ciniki_subscription_customers.id, ciniki_subscription_customers.status, "
+		. "ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.flags, "
+		. "CONCAT_WS(' ', ciniki_customers.first, ciniki_customers.last) AS customer_name "
 		. "FROM ciniki_subscription_customers "
-		. "WHERE subscription_id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' "
-		. "AND customer_id = '" . ciniki_core_dbQuote($ciniki, $customer_id) . "' "
+		. "LEFT JOIN ciniki_subscriptions ON (ciniki_subscription_customers.subscription_id = ciniki_subscriptions.id "
+			. "AND ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "') "
+		. "LEFT JOIN ciniki_customers ON (ciniki_subscription_customers.customer_id = ciniki_customers.id "
+			. "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "') "
+		. "WHERE ciniki_subscription_customers.subscription_id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' "
+		. "AND ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $customer_id) . "' "
 		. "";
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.mail', 'subscription');
 	if( $rc['stat'] != 'ok' ) {
@@ -40,19 +47,52 @@ function ciniki_subscriptions_web_unsubscribe($ciniki, $settings, $business_id, 
 	$db_updated = 0;
 	if( isset($rc['subscription']) ) {
 		$customer_subscription_id = $rc['subscription']['id'];
+		$subscription = $rc['subscription'];
 		if( $rc['subscription']['status'] < 60 ) {
-			$strsql = "UPDATE ciniki_subscription_customers SET status = 60 "
-				. "WHERE subscription_id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' "
-				. "AND customer_id = '" . ciniki_core_dbQuote($ciniki, $customer_id) . "' "
-				. "";
-			$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.subscriptions');
-			if( $rc['stat'] != 'ok' ) { 
-				ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
-				return $rc;
+			//
+			// Check if public subscription
+			//
+			if( (($rc['subscription']['flags'])&0x01) == 1 ) {
+				$strsql = "UPDATE ciniki_subscription_customers SET status = 60 "
+					. "WHERE subscription_id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' "
+					. "AND customer_id = '" . ciniki_core_dbQuote($ciniki, $customer_id) . "' "
+					. "";
+				$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.subscriptions');
+				if( $rc['stat'] != 'ok' ) { 
+					ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
+					return $rc;
+				}
+				ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
+					2, 'ciniki_subscription_customers', $customer_subscription_id, 'status', '60');
+				$db_updated = 1;
+			} else {
+				//
+				//	Email the owners a bug was added to the system.
+				//
+				$strsql = "SELECT user_id FROM ciniki_business_users "
+					. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+					. "AND package = 'ciniki' "
+					. "AND (permission_group = 'owners') "
+					. "";
+				ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
+				$rc = ciniki_core_dbQueryList($ciniki, $strsql, 'ciniki.bugs', 'user_ids', 'user_id');
+				if( $rc['stat'] != 'ok' || !isset($rc['user_ids']) || !is_array($rc['user_ids']) ) {
+					return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1056', 'msg'=>'Unable to find business owners', 'err'=>$rc['err']));
+				}
+				
+				foreach($rc['user_ids'] as $user_id) {
+					// 
+					// Don't email the submitter, they will get a separate email
+					//
+					$ciniki['emailqueue'][] = array('user_id'=>$user_id,
+						'subject'=>$subscription['customer_name'] . ' requested unsubscribe from ' . $subscription['name'],
+						'textmsg'=>$subscription['customer_name'] . ' has requested to be removed from the '
+							. 'private subscription list ' . $subscription['name'] . '.  Please remove them '
+							. 'as they are unable to do this themselves. '
+							. '',
+						);
+				}
 			}
-			ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
-				2, 'ciniki_subscription_customers', $customer_subscription_id, 'status', '60');
-			$db_updated = 1;
 		}
 	} else {
 		//
