@@ -21,8 +21,8 @@ function ciniki_subscriptions_get($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
-		'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No subscription specified'),
+        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+		'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;

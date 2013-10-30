@@ -23,19 +23,19 @@ function ciniki_subscriptions_downloadXLS($ciniki) {
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
 	$rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-		'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
-		'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No subscription specified'), 
-		'_subscription_id'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'errmsg'=>'No field specified'),
-		'_subscription_name'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'errmsg'=>'No field specified'),
-		'customer_id'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'errmsg'=>'No field specified'),
-		'customer_name'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'errmsg'=>'No field specified'),
-		'first'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'errmsg'=>'No field specified'),
-		'last'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'errmsg'=>'No field specified'),
-		'shipping_address'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'errmsg'=>'No field specified'),
-		'billing_address'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'errmsg'=>'No field specified'),
-		'mailing_address'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'errmsg'=>'No field specified'),
-		'primary_email'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'errmsg'=>'No field specified'),
-		'alternate_email'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'errmsg'=>'No field specified'),
+		'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+		'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'), 
+		'_subscription_id'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Subscription'),
+		'_subscription_name'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Subscription Name'),
+		'customer_id'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Customer'),
+		'customer_name'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Name'),
+		'first'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'First'),
+		'last'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Last'),
+		'shipping_address'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Shipping Address'),
+		'billing_address'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Billing Address'),
+		'mailing_address'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Mailing Address'),
+		'primary_email'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Primary Email'),
+		'alternate_email'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Alternate Email'),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;

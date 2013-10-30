@@ -22,10 +22,10 @@ function ciniki_subscriptions_add(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
-		'name'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No name specified'),
-		'flags'=>array('required'=>'no', 'blank'=>'no', 'default'=>'0', 'errmsg'=>'No name specified'),
-        'description'=>array('required'=>'no', 'default'=>'', 'blank'=>'yes', 'errmsg'=>'No description specified'), 
+        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+		'name'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Name'),
+		'flags'=>array('required'=>'no', 'blank'=>'no', 'default'=>'0', 'name'=>'Flags'),
+        'description'=>array('required'=>'no', 'default'=>'', 'blank'=>'yes', 'name'=>'Description'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;

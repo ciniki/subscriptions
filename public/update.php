@@ -21,11 +21,11 @@ function ciniki_subscriptions_update(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
-        'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No customer specified'), 
-        'name'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No prefix specified'), 
-        'flags'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No flags specified'), 
-        'description'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No first name specified'), 
+        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'), 
+        'name'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Name'), 
+        'flags'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Flags'), 
+        'description'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Description'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
