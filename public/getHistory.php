@@ -35,7 +35,7 @@ function ciniki_subscriptions_getHistory($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
 	$rc = ciniki_core_prepareArgs($ciniki, 'no', array(
 		'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
-		'subscriptions_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'), 
+		'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'), 
 		'field'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Field'), 
 		));
 	if( $rc['stat'] != 'ok' ) {
@@ -53,6 +53,6 @@ function ciniki_subscriptions_getHistory($ciniki) {
 	}
 
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistory');
-	return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $args['business_id'], 'ciniki_subscriptions', $args['subscriptions_id'], $args['field']);
+	return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $args['business_id'], 'ciniki_subscriptions', $args['subscription_id'], $args['field']);
 }
 ?>
