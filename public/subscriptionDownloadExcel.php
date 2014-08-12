@@ -32,8 +32,8 @@ function ciniki_subscriptions_subscriptionDownloadExcel(&$ciniki) {
     // Make sure this module is activated, and
     // check permission to run this function for this business
     //  
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'customers', 'private', 'checkAccess');
-    $rc = ciniki_customers_checkAccess($ciniki, $args['business_id'], 'ciniki.customers.subscriptionDownloadExcel', 0); 
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.subscriptionDownloadExcel', 0); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
