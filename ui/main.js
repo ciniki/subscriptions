@@ -200,7 +200,6 @@ function ciniki_subscriptions_main() {
 				}},
 			};
 		this.sublist.fieldValue = function(s, i, j, d) {
-			console.log(s + '-' + i);
 			return M.ciniki_subscriptions_main.sublist.sections[s].fields[i].default;
 		};
 		this.sublist.addClose('Back');
@@ -348,7 +347,6 @@ function ciniki_subscriptions_main() {
 				cols += (cols!=''?'::':'') + i;
 			}
 		}
-		console.log(cols);
 		window.open(M.api.getUploadURL('ciniki.subscriptions.subscriptionDownloadExcel', 
 			{'business_id':M.curBusinessID, 'subscription_id':this.sublist.subscription_id, 'columns':cols}));
 	};
