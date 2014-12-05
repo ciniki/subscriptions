@@ -6,6 +6,9 @@
 # Fields
 # ------
 # id:				The id for this subscription-customer combination.
+# uuid:				The Univeral Unique ID
+# business_id:		The business the subscription customer is attached to.
+#
 # subscription_id:	The subscription to add the customer relationship to.
 # customer_id:		The customer of the business.
 #
