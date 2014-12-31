@@ -15,7 +15,7 @@
 // Returns
 // -------
 //
-function ciniki_subscriptions_get($ciniki) {
+function ciniki_subscriptions_subscriptionGet($ciniki) {
     //  
     // Find all the required and optional arguments
     //  
@@ -23,6 +23,7 @@ function ciniki_subscriptions_get($ciniki) {
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
 		'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'),
+		'latest'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Latest'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -34,7 +35,7 @@ function ciniki_subscriptions_get($ciniki) {
     // check permission to run this function for this business
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.get', 0); 
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.subscriptionGet', 0); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -45,7 +46,7 @@ function ciniki_subscriptions_get($ciniki) {
 	$date_format = ciniki_users_dateFormat($ciniki);
 	$datetime_format = ciniki_users_datetimeFormat($ciniki);
 
-	$strsql = "SELECT id, name, flags, description "
+	$strsql = "SELECT id, name, status, flags, description "
 		. "FROM ciniki_subscriptions "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' ";
@@ -57,6 +58,39 @@ function ciniki_subscriptions_get($ciniki) {
 	if( !isset($rc['subscription']) ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'390', 'msg'=>'Invalid subscription'));
 	}
-	return array('stat'=>'ok', 'subscription'=>$rc['subscription']);
+	$subscription = $rc['subscription'];
+
+	//
+	// Check if the latest subscribers should be sent
+	//
+	if( isset($args['latest']) && $args['latest'] == 'yes' ) {
+		$strsql = "SELECT ciniki_subscription_customers.id, "
+			. "ciniki_customers.id AS customer_id, "
+			. "ciniki_customers.display_name "
+			. "FROM ciniki_subscription_customers, ciniki_customers "
+			. "WHERE ciniki_subscription_customers.subscription_id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
+			. "AND ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "AND ciniki_subscription_customers.customer_id = ciniki_customers.id "
+			. "AND ciniki_subscription_customers.status = 10 "
+			. "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "ORDER BY ciniki_subscription_customers.last_updated DESC "
+			. "LIMIT 11 "
+			. "";
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
+		$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.subscriptions', array(
+			array('container'=>'customers', 'fname'=>'customer_id', 'name'=>'customer',
+				'fields'=>array('customer_id', 'display_name')),
+			));
+		if( $rc['stat'] != 'ok' ) {
+			return $rc;
+		}
+		if( isset($rc['customers']) ) {
+			$subscription['latest'] = $rc['customers'];
+		} else {
+			$subscription['latest'] = array();
+		}
+	}
+
+	return array('stat'=>'ok', 'subscription'=>$subscription);
 }
 ?>

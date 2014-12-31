@@ -43,22 +43,31 @@ function ciniki_subscriptions_searchCustomers($ciniki) {
     }   
 
 	//
-	// Get the number of orders in each status for the business, 
-	// if no rows found, then return empty array
+	// Search for the customer in the customers module, but also check if they are subscribed to the 
+	// subscription or not
 	//
-	$strsql = "SELECT ciniki_subscription_customers.subscription_id, ciniki_subscription_customers.customer_id, "
-		. "CONCAT_WS(' ', first, last) AS name "
-		. ", ciniki_customers.id "
-		. "FROM ciniki_subscription_customers "
-		. "LEFT JOIN ciniki_customers ON (ciniki_subscription_customers.customer_id = ciniki_customers.id "
-			. "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "') "
-		. "WHERE ciniki_subscription_customers.subscription_id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
-		. "AND ciniki_subscription_customers.status = 10 "
+	$strsql = "SELECT ciniki_customers.id AS customer_id, "
+		. "ciniki_customers.display_name, "
+		. "IFNULL(ciniki_subscription_customers.status, 0) AS status, "
+		. "ciniki_subscription_customers.subscription_id "
+		. "FROM ciniki_customers "
+		. "LEFT JOIN ciniki_subscription_customers ON ("
+			. "ciniki_subscription_customers.subscription_id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
+			. "AND ciniki_customers.id = ciniki_subscription_customers.customer_id "
+			. "AND ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. ") "
+		. "WHERE ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "AND ciniki_customers.status < 60 "
 		. "AND ( ciniki_customers.first LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-			. "OR ciniki_customers.last LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%') "
+			. "OR ciniki_customers.first LIKE '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+			. "OR ciniki_customers.last LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+			. "OR ciniki_customers.last LIKE '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+			. "OR ciniki_customers.company LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+			. "OR ciniki_customers.company LIKE '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+			. ") "
 		. "";
 
-	$strsql .= "ORDER BY ciniki_customers.last, ciniki_customers.first ";
+	$strsql .= "ORDER BY ciniki_customers.sort_name ";
 	if( isset($args['limit']) && is_numeric($args['limit']) && $args['limit'] > 0 ) {
 		$strsql .= "LIMIT " . ciniki_core_dbQuote($ciniki, $args['limit']) . " ";	// is_numeric verified
 	}

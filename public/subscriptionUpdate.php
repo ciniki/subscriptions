@@ -2,7 +2,6 @@
 //
 // Description
 // -----------
-// This function will add a new subscription to the subscriptions module.
 //
 // Info
 // ----
@@ -16,42 +15,43 @@
 // -------
 // <rsp stat='ok' id='34' />
 //
-function ciniki_subscriptions_add(&$ciniki) {
+function ciniki_subscriptions_subscriptionUpdate(&$ciniki) {
     //  
     // Find all the required and optional arguments
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
-		'name'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Name'),
-		'flags'=>array('required'=>'no', 'blank'=>'no', 'default'=>'0', 'name'=>'Flags'),
-        'description'=>array('required'=>'no', 'default'=>'', 'blank'=>'yes', 'name'=>'Description'), 
+        'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'), 
+        'name'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Name'), 
+		'status'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Status'),
+        'flags'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Flags'), 
+        'description'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Description'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
     $args = $rc['args'];
-
+    
     //  
     // Make sure this module is activated, and
     // check permission to run this function for this business
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.add', 0); 
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.subscriptionUpdate', $args['subscription_id']); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
 	$modules = $rc['modules'];
 
 	//
-	// Add the subscription
+	// Update the subscription
 	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
-	$rc = ciniki_core_objectAdd($ciniki, $args['business_id'], 'ciniki.subscriptions.subscription', $args, 0x07);
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectUpdate');
+	$rc = ciniki_core_objectUpdate($ciniki, $args['business_id'], 'ciniki.subscriptions.subscription', $args['subscription_id'], $args, 0x07);
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-	$subscription_id = $rc['id'];
 
 	// 
 	// Update the web settings
@@ -65,6 +65,6 @@ function ciniki_subscriptions_add(&$ciniki) {
 		}
 	}
 
-	return array('stat'=>'ok', 'id'=>$subscription_id);
+	return array('stat'=>'ok');
 }
 ?>

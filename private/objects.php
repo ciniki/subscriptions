@@ -15,6 +15,7 @@ function ciniki_subscriptions_objects($ciniki) {
 		'name'=>'Subscription',
 		'table'=>'ciniki_subscriptions',
 		'fields'=>array(
+			'status'=>array(),
 			'flags'=>array(),
 			'name'=>array(),
 			'description'=>array(),
