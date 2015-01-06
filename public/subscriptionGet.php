@@ -66,7 +66,8 @@ function ciniki_subscriptions_subscriptionGet($ciniki) {
 	if( isset($args['latest']) && $args['latest'] == 'yes' ) {
 		$strsql = "SELECT ciniki_subscription_customers.id, "
 			. "ciniki_customers.id AS customer_id, "
-			. "ciniki_customers.display_name "
+			. "ciniki_customers.display_name, "
+			. "IFNULL(ciniki_customers.member_status, 0) AS member_status "
 			. "FROM ciniki_subscription_customers, ciniki_customers "
 			. "WHERE ciniki_subscription_customers.subscription_id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
 			. "AND ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
@@ -79,7 +80,7 @@ function ciniki_subscriptions_subscriptionGet($ciniki) {
 		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
 		$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.subscriptions', array(
 			array('container'=>'customers', 'fname'=>'customer_id', 'name'=>'customer',
-				'fields'=>array('customer_id', 'display_name')),
+				'fields'=>array('customer_id', 'display_name', 'member_status')),
 			));
 		if( $rc['stat'] != 'ok' ) {
 			return $rc;
