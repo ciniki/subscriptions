@@ -34,7 +34,6 @@ function ciniki_subscriptions_emailList($ciniki, $business_id, $subscription_ids
 		. "AND ciniki_customer_emails.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND (ciniki_customer_emails.flags&0x30) = 0 "	// Only emals that are ok to send to
 		. "";
-	error_log($strsql);
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.subscriptions', 'email');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
