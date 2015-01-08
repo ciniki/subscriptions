@@ -88,7 +88,8 @@ function ciniki_subscriptions_main() {
 			'search':{'label':'Search', 'type':'livesearchgrid', 'livesearchcols':2, 'hint':'customer name', 'noData':'No customers found', },
 			'_actions':{'label':'Actions', 'type':'simplelist', 'list':{
 //				'download':{'label':'Download Subscriber List', 'fn':'M.ciniki_subscriptions_main.showDownload(M.ciniki_subscriptions_main.subscription.subscription_id);'},
-				'download':{'label':'Download Subscriber List', 'fn':'M.ciniki_subscriptions_main.showDownload(\'M.ciniki_subscriptions_main.showMain();\',M.ciniki_subscriptions_main.subscription.subscription_id);'},
+//				'download':{'label':'Download Subscriber List', 'fn':'M.ciniki_subscriptions_main.showDownload(\'M.ciniki_subscriptions_main.showMain();\',M.ciniki_subscriptions_main.subscription.subscription_id);'},
+				'download':{'label':'Download Subscriber List', 'fn':'M.startApp(\'ciniki.customers.download\',null,\'M.ciniki_subscriptions_main.showSubscription();\',\'mc\',{\'subscription_id\':M.ciniki_subscriptions_main.subscription.subscription_id});'},
 			}},
 			'customers':{'label':'Recent Additions', 'type':'simplegrid', 'num_cols':1,
 				'headerValues':null,
@@ -185,7 +186,7 @@ function ciniki_subscriptions_main() {
 		this.download.data = {
 			'_subscription_id':'No',
 			'subscription_name':'No',
-			'customer_id':'No',
+//			'customer_id':'No',
 			'customer_name':'Yes',
 			'prefix':'No',
 			'first':'No',
@@ -195,15 +196,15 @@ function ciniki_subscriptions_main() {
 			'shipping_address':'No',
 			'billing_address':'No',
 			'mailing_address':'Yes',
-			'primary_email':'Yes',
-			'alternatey_email':'No',
+			'emails':'Yes',
+//			'alternatey_email':'No',
 			};
 		this.download.sections = {
 			'_fields':{'label':'Available Fields', 'fields':{
-				'_subscription_id':{'label':'Subscription ID', 'type':'toggle', 'toggles':this.toggleOptions},
+//				'_subscription_id':{'label':'Subscription ID', 'type':'toggle', 'toggles':this.toggleOptions},
 				'subscription_name':{'label':'Subscription Name', 'type':'toggle', 'toggles':this.toggleOptions},
-				'customer_id':{'label':'Customer ID', 'type':'toggle', 'toggles':this.toggleOptions},
-				'customer_name':{'label':'Customer full name', 'type':'toggle', 'toggles':this.toggleOptions},
+//				'customer_id':{'label':'Customer ID', 'type':'toggle', 'toggles':this.toggleOptions},
+				'display_name':{'label':'Customer full name', 'type':'toggle', 'toggles':this.toggleOptions},
 				'prefix':{'label':'Customer prefix', 'type':'toggle', 'toggles':this.toggleOptions},
 				'first':{'label':'Customer first name', 'type':'toggle', 'toggles':this.toggleOptions},
 				'middle':{'label':'Customer middle name', 'type':'toggle', 'toggles':this.toggleOptions},
@@ -212,8 +213,8 @@ function ciniki_subscriptions_main() {
 //				'shipping_address':{'label':'Shipping Address', 'type':'toggle', 'toggles':this.toggleOptions},
 //				'billing_address':{'label':'Billing Address', 'type':'toggle', 'toggles':this.toggleOptions},
 				'mailing_address':{'label':'Mailing Address', 'type':'toggle', 'toggles':this.toggleOptions},
-				'primary_email':{'label':'Primary Email', 'type':'toggle', 'toggles':this.toggleOptions},
-				'alternate_email':{'label':'Alternate Email', 'type':'toggle', 'toggles':this.toggleOptions},
+				'emails':{'label':'Emails', 'type':'toggle', 'toggles':this.toggleOptions},
+//				'alternate_email':{'label':'Alternate Email', 'type':'toggle', 'toggles':this.toggleOptions},
 				}},
 			'_download':{'label':'', 'buttons':{
 				'downloadXLS':{'label':'Download Excel', 'fn':'M.ciniki_subscriptions_main.downloadSubscriberList(M.ciniki_subscriptions_main.download.subscription_id, \'XLS\');'},
@@ -433,39 +434,6 @@ function ciniki_subscriptions_main() {
 	this.deleteSubscription = function() {
 		
 	}
-
-//	this.showDownload = function(subscriptionID) {
-//		this.download.subscription_id = subscriptionID;
-//		this.download.cb = 'M.ciniki_subscriptions_main.showSubscription();';
-//		this.download.refresh();
-//		this.download.show();
-//	}
-
-	this.downloadSubscriberList = function(subscriptionID, type) {
-		if( type == 'XLS' ) {
-			var content = this.download.serializeForm('yes');
-			window.open(M.api.getUploadURL('ciniki.subscriptions.downloadXLS', 
-				{'business_id':M.curBusinessID, 'subscription_id':subscriptionID}) + '&' + content);
-		}
-	}
-
-	this.showDownload = function(cb, sid) {
-		if( sid != null ) { this.subscription.subscription_id = sid; }
-		this.subscription.refresh();
-		this.subscription.show(cb);
-	};
-
-	this.downloadListExcel = function() {	
-		var cols = '';
-		var fields = this.subscription.sections.options.fields;
-		for(i in fields) {
-			if( this.subscription.formFieldValue(fields[i], i) == 'yes' ) {
-				cols += (cols!=''?'::':'') + i;
-			}
-		}
-		window.open(M.api.getUploadURL('ciniki.subscriptions.subscriptionDownloadExcel', 
-			{'business_id':M.curBusinessID, 'subscription_id':this.subscription.subscription_id, 'columns':cols}));
-	};
 
 	this.showSubscribers = function(cb, sid) {
 		if( sid != null ) { this.subscribers.subscription_id = sid; }

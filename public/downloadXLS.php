@@ -28,7 +28,7 @@ function ciniki_subscriptions_downloadXLS($ciniki) {
 		'_subscription_id'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Subscription'),
 		'_subscription_name'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Subscription Name'),
 		'customer_id'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Customer'),
-		'customer_name'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Name'),
+		'display_name'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Name'),
 		'first'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'First'),
 		'last'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Last'),
 		'shipping_address'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Shipping Address'),
@@ -56,9 +56,14 @@ function ciniki_subscriptions_downloadXLS($ciniki) {
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 	if( $args['mailing_address'] == 'Yes' ) {
-		$strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, "
-			. "ciniki_customers.id AS customer_id, CONCAT_WS(' ', prefix, first, middle, last, suffix) AS customer_name, "
-			. "ciniki_customers.first, ciniki_customers.last, ciniki_customers.primary_email, ciniki_customers.alternate_email, "
+		$strsql = "SELECT ciniki_subscriptions.id, "
+			. "ciniki_subscriptions.name, "
+			. "ciniki_subscriptions.description, "
+			. "ciniki_customers.id AS customer_id, "
+			. "ciniki_customers.display_name, "
+			. "ciniki_customers.first, ciniki_customers.last, "
+			. "ciniki_customers.primary_email, "
+			. "ciniki_customers.alternate_email, "
 			. "ciniki_customer_addresses.address1, ciniki_customer_addresses.address2, "
 			. "ciniki_customer_addresses.city, ciniki_customer_addresses.province, "
 			. "ciniki_customer_addresses.postal, ciniki_customer_addresses.country "
