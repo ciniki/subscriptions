@@ -62,7 +62,7 @@ function ciniki_subscriptions_main() {
 				}},
 			'_buttons':{'label':'', 'buttons':{
 				'save':{'label':'Save subscription', 'fn':'M.ciniki_subscriptions_main.saveSubscription();'},
-				//'delete':{'label':'Delete subscription', 'fn':'M.ciniki_subscriptions_main.deleteSubscription();'},
+				'delete':{'label':'Delete subscription', 'fn':'M.ciniki_subscriptions_main.deleteSubscription();'},
 				}},
 			};
 		this.edit.fieldValue = function(s, i, d) { 	
@@ -432,7 +432,16 @@ function ciniki_subscriptions_main() {
 	}
 
 	this.deleteSubscription = function() {
-		
+		if( confirm("Are you sure you want to remove '" + this.subscription.data.name + "'? This will unsubscribe all customers from this list, and remove any history of the subscription.") ) {
+			var rsp = M.api.getJSONCb('ciniki.subscriptions.subscriptionDelete', 
+				{'business_id':M.curBusinessID, 'subscription_id':M.ciniki_subscriptions_main.edit.subscription_id}, function(rsp) {
+					if( rsp.stat != 'ok' ) {
+						M.api.err(rsp);
+						return false;
+					}
+					M.ciniki_subscriptions_main.subscription.close();
+				});
+		}
 	}
 
 	this.showSubscribers = function(cb, sid) {

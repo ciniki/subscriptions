@@ -17,7 +17,7 @@
 // Returns
 // -------
 //
-function ciniki_subscriptions_checkAccess($ciniki, $business_id, $method, $subscription_id) {
+function ciniki_subscriptions_checkAccess(&$ciniki, $business_id, $method, $subscription_id) {
 	//
 	// Check if the business is active and the module is enabled
 	//
