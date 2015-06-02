@@ -73,6 +73,7 @@ function ciniki_subscriptions_web_unsubscribe(&$ciniki, $settings, $business_id,
 					. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 					. "AND package = 'ciniki' "
 					. "AND (permission_group = 'owners') "
+					. "AND status = 10 "
 					. "";
 				ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
 				$rc = ciniki_core_dbQueryList($ciniki, $strsql, 'ciniki.bugs', 'user_ids', 'user_id');
