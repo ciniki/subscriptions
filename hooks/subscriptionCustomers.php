@@ -52,7 +52,6 @@ function ciniki_subscriptions_hooks_subscriptionCustomers($ciniki, $business_id,
 			'fields'=>array('status_text'),
 			'maps'=>array('status_text'=>$maps['subscription_customer']['status'])),
 		));
-	error_log($strsql);
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
