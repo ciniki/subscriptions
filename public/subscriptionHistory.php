@@ -28,7 +28,7 @@
 //		...
 //	</users>
 //
-function ciniki_subscriptions_getHistory($ciniki) {
+function ciniki_subscriptions_subscriptionHistory($ciniki) {
 	//
 	// Find all the required and optional arguments
 	//
@@ -47,7 +47,7 @@ function ciniki_subscriptions_getHistory($ciniki) {
 	// Check access to business_id as owner, or sys admin
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-	$rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.getHistory', 0);
+	$rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.subscriptionHistory', 0);
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
