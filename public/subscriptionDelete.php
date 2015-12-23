@@ -33,7 +33,7 @@ function ciniki_subscriptions_subscriptionDelete(&$ciniki) {
 	// Check access to business_id as owner
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-	$rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.subscriptionDelete', $args['subscription_id']);
+	$rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.subscriptionDelete');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}

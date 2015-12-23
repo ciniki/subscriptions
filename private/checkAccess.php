@@ -11,13 +11,11 @@
 // ciniki:
 // business_id: 		The ID of the business the request is for.
 // method:				The requested method.
-// subscription_id:		The ID of the subscription the request is for.  Only checked if 
-//						subscription_id is specified and greater than zero.
 // 
 // Returns
 // -------
 //
-function ciniki_subscriptions_checkAccess(&$ciniki, $business_id, $method, $subscription_id) {
+function ciniki_subscriptions_checkAccess(&$ciniki, $business_id, $method) {
 	//
 	// Check if the business is active and the module is enabled
 	//

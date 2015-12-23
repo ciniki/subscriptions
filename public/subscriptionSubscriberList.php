@@ -34,7 +34,7 @@ function ciniki_subscriptions_subscriptionSubscriberList($ciniki) {
     // check permission to run this function for this business
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.subscriptionSubscriberList', $args['subscription_id']); 
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.subscriptionSubscriberList'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   

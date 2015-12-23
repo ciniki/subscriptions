@@ -35,7 +35,7 @@ function ciniki_subscriptions_downloadMailMerge($ciniki) {
 	// Check access to business_id, and the subscription
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-	$ac = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.downloadMailMerge', $args['subscription_id']);
+	$ac = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.downloadMailMerge');
 	if( $ac['stat'] != 'ok' ) {
 		return $ac;
 	}

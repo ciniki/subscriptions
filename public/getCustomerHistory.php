@@ -48,7 +48,7 @@ function ciniki_subscriptions_getCustomerHistory($ciniki) {
 	// Check access to business_id as owner, or sys admin
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-	$rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.getCustomerHistory', 0);
+	$rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.getCustomerHistory');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}

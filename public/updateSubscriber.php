@@ -39,7 +39,7 @@ function ciniki_subscriptions_updateSubscriber($ciniki) {
     // check permission to run this function for this business
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.updateSubscriber', $args['subscription_id']); 
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.updateSubscriber'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   

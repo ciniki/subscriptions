@@ -46,7 +46,7 @@ function ciniki_subscriptions_downloadXLS($ciniki) {
 	// Check access to business_id, and the subscription
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-	$ac = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.downloadXLS', $args['subscription_id']);
+	$ac = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.downloadXLS');
 	if( $ac['stat'] != 'ok' ) {
 		return $ac;
 	}
