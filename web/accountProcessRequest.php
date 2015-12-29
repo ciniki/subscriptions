@@ -9,7 +9,7 @@
 // Returns
 // -------
 //
-function ciniki_subscriptions_web_accountProcessRequest($ciniki, $settings, $business_id, $args) {
+function ciniki_subscriptions_web_accountProcessRequest(&$ciniki, $settings, $business_id, $args) {
 
     $page = array(
         'title'=>'Mailing Lists',
@@ -20,6 +20,11 @@ function ciniki_subscriptions_web_accountProcessRequest($ciniki, $settings, $bus
 
     $base_url = $args['base_url'];
 
+    if( !isset($ciniki['request']['page-container-class']) ) {
+        $ciniki['request']['page-container-class'] = 'page-account-ciniki-subscriptions';
+    } else {
+        $ciniki['request']['page-container-class'] .= ' page-account-ciniki-subscriptions';
+    }
     //
     // Load the settings
     //
@@ -108,21 +113,25 @@ function ciniki_subscriptions_web_accountProcessRequest($ciniki, $settings, $bus
     //
     // Show the list of subscriptions available for the subscribe/unsubscribe
     //
+    $content = "<div class='subscription-form'>";
     $content = "<form action='' method='POST'>";
     $content .= "<input type='hidden' name='action' value='update'/>";
     foreach($subscriptions as $snum => $subscription) {
         $sid = $subscription['id'];
+        $content .= "<div class='input'>";
         $content .= "<input id='subscription-$sid' type='checkbox' class='checkbox' name='subscription-$sid' value='$sid' ";
         if( $subscription['subscribed'] == 'yes' ) {
             $content .= " checked";
         }
         $content .= "/>";
         $content .= " <label class='checkbox' for='subscription-$sid'>" . $subscription['name'] . "</label><br/>";
+        $content .= "</div>";
     }
-    $content .= "<div class='submit'><input type='submit' class='submit' value='Save Changes'></div>\n";
-    $content .= "</form>\n";
+    $content .= "<div class='submit'><input type='submit' class='button submit' value='Save'></div>\n";
+    $content .= "</form>";
+    $content .= "</div>\n";
 
-    $page['blocks'][] = array('type'=>'content', 'content'=>$content);
+    $page['blocks'][] = array('type'=>'content', 'html'=>$content);
 
 
 	return array('stat'=>'ok', 'page'=>$page);
