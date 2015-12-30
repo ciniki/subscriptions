@@ -114,7 +114,7 @@ function ciniki_subscriptions_web_accountProcessRequest(&$ciniki, $settings, $bu
     // Show the list of subscriptions available for the subscribe/unsubscribe
     //
     $content = "<div class='subscription-form'>";
-    $content = "<form action='' method='POST'>";
+    $content .= "<form action='' method='POST'>";
     $content .= "<input type='hidden' name='action' value='update'/>";
     foreach($subscriptions as $snum => $subscription) {
         $sid = $subscription['id'];
