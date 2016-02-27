@@ -91,6 +91,7 @@ function ciniki_subscriptions_main() {
 //				'download':{'label':'Download Subscriber List', 'fn':'M.ciniki_subscriptions_main.showDownload(\'M.ciniki_subscriptions_main.showMain();\',M.ciniki_subscriptions_main.subscription.subscription_id);'},
 				'download':{'label':'Download Subscriber List', 'fn':'M.startApp(\'ciniki.customers.download\',null,\'M.ciniki_subscriptions_main.showSubscription();\',\'mc\',{\'subscription_id\':M.ciniki_subscriptions_main.subscription.subscription_id});'},
 				'downloadmailmerge':{'label':'Download Excel Mail Merge', 'fn':'M.ciniki_subscriptions_main.downloadMailMerge(M.ciniki_subscriptions_main.subscription.subscription_id);'},
+				'addallcustomers':{'label':'Add All Customers', 'fn':'M.ciniki_subscriptions_main.addAllCustomers(M.ciniki_subscriptions_main.subscription.subscription_id);'},
 			}},
 			'customers':{'label':'Recent Additions', 'type':'simplegrid', 'num_cols':1,
 				'headerValues':null,
@@ -463,4 +464,17 @@ function ciniki_subscriptions_main() {
 	this.downloadMailMerge = function(sid) {
 		M.api.openFile('ciniki.subscriptions.downloadMailMerge', {'business_id':M.curBusinessID, 'subscription_id':sid});
 	};
+
+    this.addAllCustomers = function(sid) {
+		if( confirm("Are you sure you add all your customers to this mailing list?") ) {
+			var rsp = M.api.getJSONCb('ciniki.subscriptions.subscriptionAddAllCustomers', 
+				{'business_id':M.curBusinessID, 'subscription_id':sid}, function(rsp) {
+					if( rsp.stat != 'ok' ) {
+						M.api.err(rsp);
+						return false;
+					}
+                    M.ciniki_subscriptions_main.showSubscription();
+				});
+		}
+    };
 }
