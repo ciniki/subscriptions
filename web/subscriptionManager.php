@@ -9,7 +9,7 @@
 // Returns
 // -------
 //
-function ciniki_subscriptions_web_subscriptionManager($ciniki, $settings, $business_id) {
+function ciniki_subscriptions_web_subscriptionManager(&$ciniki, $settings, $business_id) {
 
     if( isset($ciniki['session']['customer']['id']) && $ciniki['session']['customer']['id'] > 0 ) {
         $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, "
