@@ -5,11 +5,11 @@
 //
 // Info
 // ----
-// Status: 			defined
+// Status:          defined
 //
 // Arguments
 // ---------
-// user_id: 		The user making the request
+// user_id:         The user making the request
 // 
 // Returns
 // -------
@@ -39,31 +39,31 @@ function ciniki_subscriptions_subscriptionSubscriberList($ciniki) {
         return $rc;
     }   
 
-	$strsql = "SELECT ciniki_subscription_customers.id, "
-		. "ciniki_customers.id AS customer_id, "
-		. "ciniki_customers.display_name, "
-		. "IFNULL(ciniki_subscription_customers.status, 0) AS status, "
-		. "IFNULL(ciniki_customers.member_status, 0) AS member_status "
-		. "FROM ciniki_subscription_customers, ciniki_customers "
-		. "WHERE ciniki_subscription_customers.subscription_id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
-		. "AND ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "AND ciniki_subscription_customers.customer_id = ciniki_customers.id "
-		. "AND ciniki_subscription_customers.status = 10 "
-		. "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "ORDER BY ciniki_customers.sort_name ASC "
-		. "";
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.subscriptions', array(
-		array('container'=>'customers', 'fname'=>'customer_id', 'name'=>'customer',
-			'fields'=>array('customer_id', 'display_name', 'status', 'member_status')),
-		));
-	if( $rc['stat'] != 'ok' ) {
-		return $rc;
-	}
-	if( !isset($rc['customers']) ) {
-		return array('stat'=>'ok', 'customers'=>array());
-	}
+    $strsql = "SELECT ciniki_subscription_customers.id, "
+        . "ciniki_customers.id AS customer_id, "
+        . "ciniki_customers.display_name, "
+        . "IFNULL(ciniki_subscription_customers.status, 0) AS status, "
+        . "IFNULL(ciniki_customers.member_status, 0) AS member_status "
+        . "FROM ciniki_subscription_customers, ciniki_customers "
+        . "WHERE ciniki_subscription_customers.subscription_id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
+        . "AND ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND ciniki_subscription_customers.customer_id = ciniki_customers.id "
+        . "AND ciniki_subscription_customers.status = 10 "
+        . "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "ORDER BY ciniki_customers.sort_name ASC "
+        . "";
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
+    $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.subscriptions', array(
+        array('container'=>'customers', 'fname'=>'customer_id', 'name'=>'customer',
+            'fields'=>array('customer_id', 'display_name', 'status', 'member_status')),
+        ));
+    if( $rc['stat'] != 'ok' ) {
+        return $rc;
+    }
+    if( !isset($rc['customers']) ) {
+        return array('stat'=>'ok', 'customers'=>array());
+    }
 
-	return array('stat'=>'ok', 'customers'=>$rc['customers']);
+    return array('stat'=>'ok', 'customers'=>$rc['customers']);
 }
 ?>

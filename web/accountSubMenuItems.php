@@ -31,6 +31,6 @@ function ciniki_subscriptions_web_accountSubMenuItems($ciniki, $settings, $busin
     }
 
 
-	return array('stat'=>'ok', 'submenu'=>$submenu);
+    return array('stat'=>'ok', 'submenu'=>$submenu);
 }
 ?>

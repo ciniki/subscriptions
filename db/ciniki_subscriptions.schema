@@ -13,46 +13,46 @@
 #
 # Fields
 # ------
-# id:				The subscription id.
-# uuid:				The Universal Unique ID.
-# business_id:		The business the subscription is attached to.
+# id:               The subscription id.
+# uuid:             The Universal Unique ID.
+# business_id:      The business the subscription is attached to.
 #
-# status:			The current status of the subscription list.  This is used to create one of lists if required.
-#					
-#					0 - Unknown
-#					10 - Active
-#					30 - One Time
-#					50 - Archived
+# status:           The current status of the subscription list.  This is used to create one of lists if required.
+#                   
+#                   0 - Unknown
+#                   10 - Active
+#                   30 - One Time
+#                   50 - Archived
 # 
-# flags:			The flags for this subscription list.  *future*
+# flags:            The flags for this subscription list.  *future*
 #
-#					0x01 - public subscription, available for customers to subscribe/unsubscribe on website
-#					0x02 - auto subscribe new customers
-#					0x04 - email - send mailings by email, if customer subscribed by email
-#					0x08 - postal - send mailings by postal, if customer subscribed by email
-#					0x10 - unused
+#                   0x01 - public subscription, available for customers to subscribe/unsubscribe on website
+#                   0x02 - auto subscribe new customers
+#                   0x04 - email - send mailings by email, if customer subscribed by email
+#                   0x08 - postal - send mailings by postal, if customer subscribed by email
+#                   0x10 - unused
 #
-# name:				The name for the subscription.  This field will
-# 					be displayed to the customer.
+# name:             The name for the subscription.  This field will
+#                   be displayed to the customer.
 #
-# description:		Free form field for the business owner to enter a 
-#					description about the subscription.  This field will
-#					be shown to customers.
+# description:      Free form field for the business owner to enter a 
+#                   description about the subscription.  This field will
+#                   be shown to customers.
 #
-# date_added:		The date and time the record was added.
-# last_updated:		The date and time the record was last updated.
+# date_added:       The date and time the record was added.
+# last_updated:     The date and time the record was last updated.
 #
 create table ciniki_subscriptions (
-	id int not null auto_increment,
-	uuid char(36) not null,
-	business_id int not null,
-	status tinyint unsigned not null,
-	flags tinyint unsigned not null,
-	name varchar(150) not null,
-	description varchar(2000) not null,
-	date_added datetime not null,
-	last_updated datetime not null,
-	primary key (id),
-	unique index (uuid),
-	index (business_id)
+    id int not null auto_increment,
+    uuid char(36) not null,
+    business_id int not null,
+    status tinyint unsigned not null,
+    flags tinyint unsigned not null,
+    name varchar(150) not null,
+    description varchar(2000) not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (uuid),
+    index (business_id)
 ) ENGINE='InnoDB', COMMENT='v1.03';

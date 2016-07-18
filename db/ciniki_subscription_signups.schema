@@ -5,19 +5,19 @@
 #
 # Fields
 # ------
-# business_id:		The business the subscription is attached to.
+# business_id:      The business the subscription is attached to.
 #
 # signup_key:       The key send with the signup confirmation. 20 random characters followed by - and UUID from database.
 #
 # signup_data:      The serialized data for the signup.
 #
-# date_added:		The UTC date and time the record was added.
+# date_added:       The UTC date and time the record was added.
 #
 create table ciniki_subscription_signups (
-	business_id int not null,
+    business_id int not null,
     signup_key char(57) not null,
     signup_data varchar(5000) not null,
-	date_added datetime not null,
-	primary key (signup_key),
-	index (business_id)
+    date_added datetime not null,
+    primary key (signup_key),
+    index (business_id)
 ) ENGINE='InnoDB', COMMENT='v1.01';

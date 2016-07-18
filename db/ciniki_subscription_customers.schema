@@ -5,32 +5,32 @@
 #
 # Fields
 # ------
-# id:				The id for this subscription-customer combination.
-# uuid:				The Univeral Unique ID
-# business_id:		The business the subscription customer is attached to.
+# id:               The id for this subscription-customer combination.
+# uuid:             The Univeral Unique ID
+# business_id:      The business the subscription customer is attached to.
 #
-# subscription_id:	The subscription to add the customer relationship to.
-# customer_id:		The customer of the business.
+# subscription_id:  The subscription to add the customer relationship to.
+# customer_id:      The customer of the business.
 #
-# status:			The status of the subscription
-#					0 - unknown
-#					2 - pending
-#					10 - subscribed
-#					60 - removed
+# status:           The status of the subscription
+#                   0 - unknown
+#                   2 - pending
+#                   10 - subscribed
+#                   60 - removed
 #
-# date_added:		The date and time the record was added.
-# last_updated:		The date and time the record was last updated.
+# date_added:       The date and time the record was added.
+# last_updated:     The date and time the record was last updated.
 #
 create table ciniki_subscription_customers (
-	id int not null auto_increment,
-	uuid char(36) not null,
-	business_id int not null,
-	subscription_id int not null,				# links to subscriptions tables
-	customer_id int not null,					# links to users table
-	status tinyint unsigned not null,
-	date_added datetime not null,
-	last_updated datetime not null,
-	primary key (id),
-	unique index (subscription_id, customer_id),
-	index (business_id, uuid, last_updated)
+    id int not null auto_increment,
+    uuid char(36) not null,
+    business_id int not null,
+    subscription_id int not null,               # links to subscriptions tables
+    customer_id int not null,                   # links to users table
+    status tinyint unsigned not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (subscription_id, customer_id),
+    index (business_id, uuid, last_updated)
 ) ENGINE='InnoDB', COMMENT='v1.02';

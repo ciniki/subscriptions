@@ -39,34 +39,34 @@ function ciniki_subscriptions_web_accountProcessRequest(&$ciniki, $settings, $bu
         $settings = array();
     }
 
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'web', 'subscribe');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'web', 'unsubscribe');
 
     //
     // Get the list of subscription
     //
-	if( isset($ciniki['session']['customer']['id']) && $ciniki['session']['customer']['id'] > 0 ) {
-		$strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, "
-			. "IF(ciniki_subscription_customers.status=10, 'yes', 'no') AS subscribed "
-			. "FROM ciniki_subscriptions "
-			. "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
-				. "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['customer']['id']) . "') "
-			. "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-			. "AND (ciniki_subscriptions.flags&0x01) = 0x01 "
-			. "";
-	} else {
-		$strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, '0' AS subscribed "
-			. "FROM ciniki_subscriptions "
-			. "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-			. "AND (ciniki_subscriptions.flags&0x01) = 0x01 "
-			. "";
-	}
+    if( isset($ciniki['session']['customer']['id']) && $ciniki['session']['customer']['id'] > 0 ) {
+        $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, "
+            . "IF(ciniki_subscription_customers.status=10, 'yes', 'no') AS subscribed "
+            . "FROM ciniki_subscriptions "
+            . "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
+                . "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['customer']['id']) . "') "
+            . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND (ciniki_subscriptions.flags&0x01) = 0x01 "
+            . "";
+    } else {
+        $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, '0' AS subscribed "
+            . "FROM ciniki_subscriptions "
+            . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND (ciniki_subscriptions.flags&0x01) = 0x01 "
+            . "";
+    }
 
-	$rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'ciniki.subscriptions', array(
-		array('container'=>'subscriptions', 'fname'=>'id',
-			'fields'=>array('id', 'name', 'description', 'subscribed')),
-		));
+    $rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'ciniki.subscriptions', array(
+        array('container'=>'subscriptions', 'fname'=>'id',
+            'fields'=>array('id', 'name', 'description', 'subscribed')),
+        ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -134,6 +134,6 @@ function ciniki_subscriptions_web_accountProcessRequest(&$ciniki, $settings, $bu
     $page['blocks'][] = array('type'=>'content', 'html'=>$content);
 
 
-	return array('stat'=>'ok', 'page'=>$page);
+    return array('stat'=>'ok', 'page'=>$page);
 }
 ?>

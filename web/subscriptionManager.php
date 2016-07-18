@@ -234,6 +234,6 @@ if( isset($ciniki['session']['customer']['id']) && $ciniki['session']['customer'
 }
     $blocks[] = array('type'=>'content', 'title'=>$title, 'html'=>$html);
 
-	return array('stat'=>'ok', 'blocks'=>$blocks);
+    return array('stat'=>'ok', 'blocks'=>$blocks);
 }
 ?>

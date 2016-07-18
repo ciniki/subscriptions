@@ -12,11 +12,11 @@
 //
 function ciniki_subscriptions_cron_jobs($ciniki) {
 
-	ciniki_cron_logMsg($ciniki, 0, array('code'=>'0', 'msg'=>'Checking for ciniki.subscriptions jobs', 'severity'=>'5'));
+    ciniki_cron_logMsg($ciniki, 0, array('code'=>'0', 'msg'=>'Checking for ciniki.subscriptions jobs', 'severity'=>'5'));
 
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
 
     //
     // Get the list of signups that can be deleted after 24 hours
@@ -28,6 +28,6 @@ function ciniki_subscriptions_cron_jobs($ciniki) {
             'severity'=>50, 'err'=>$rc['err']));
     }
 
-	return array('stat'=>'ok');
+    return array('stat'=>'ok');
 }
 ?>
