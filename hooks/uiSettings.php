@@ -28,10 +28,10 @@ function ciniki_subscriptions_hooks_uiSettings($ciniki, $business_id, $args) {
     // Check permissions for what menu items should be available
     //
     if( isset($ciniki['business']['modules']['ciniki.subscriptions'])
-        && ($args['permissions']['owners'] == 'yes'
-            || $args['permissions']['employees'] == 'yes'
-            || $args['permissions']['resellers'] == 'yes'
-            || ($ciniki['session']['users']['perms']&0x01) == 0x01
+        && (isset($args['permissions']['owners'])
+            || isset($args['permissions']['employees'])
+            || isset($args['permissions']['resellers'])
+            || ($ciniki['session']['user']['perms']&0x01) == 0x01
             )
         ) {
         $menu_item = array(
