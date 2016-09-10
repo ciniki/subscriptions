@@ -17,7 +17,7 @@ function ciniki_subscriptions_hooks_uiSettings($ciniki, $business_id, $args) {
     //
     // Setup the default response
     //
-    $rsp = array('stat'=>'ok', 'menu_items'=>$menu);  
+    $rsp = array('stat'=>'ok', 'menu_items'=>array());  
 
     //
     // Check permissions for what menu items should be available
