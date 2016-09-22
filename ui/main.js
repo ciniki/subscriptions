@@ -10,7 +10,7 @@ function ciniki_subscriptions_main() {
     this.statusOptions = {'10':'Active', 
         //'30':'Single Use',  // Future
         '50':'Archive'};
-    this.subscriptionFlags = {'1':{'name':'Public'}, };
+    this.subscriptionFlags = {'1':{'name':'Public'}, '2':{'name':'Auto Subscribe'}};
 
     this.init = function() {
         //

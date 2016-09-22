@@ -56,7 +56,8 @@ function ciniki_subscriptions_subscriptionList($ciniki) {
             . "ORDER BY ciniki_subscriptions.name "
             . "";
     } else {
-        $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description "
+        $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, "
+            . "ciniki_subscriptions.flags "
             . "FROM ciniki_subscriptions "
             . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
             . "ORDER BY ciniki_subscriptions.name "
