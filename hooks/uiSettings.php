@@ -17,7 +17,7 @@ function ciniki_subscriptions_hooks_uiSettings($ciniki, $business_id, $args) {
     //
     // Setup the default response
     //
-    $rsp = array('stat'=>'ok', 'menu_items'=>array());  
+    $rsp = array('stat'=>'ok', 'menu_items'=>array(), 'settings_menu_items'=>array());  
 
     //
     // Check permissions for what menu items should be available
@@ -36,6 +36,15 @@ function ciniki_subscriptions_hooks_uiSettings($ciniki, $business_id, $args) {
             );
         $rsp['menu_items'][] = $menu_item;
     } 
+
+    if( isset($ciniki['business']['modules']['ciniki.subscriptions'])
+        && (isset($args['permissions']['owners'])
+            || isset($args['permissions']['resellers'])
+            || ($ciniki['session']['user']['perms']&0x01) == 0x01
+            )
+        ) {
+        $rsp['settings_menu_items'][] = array('priority'=>3200, 'label'=>'Subscriptions', 'edit'=>array('app'=>'ciniki.subscriptions.settings'));
+    }
 
     return $rsp;
 }
