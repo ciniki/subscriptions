@@ -125,9 +125,9 @@ function ciniki_subscriptions_main() {
                 return d.customer.display_name;
             } else if( j == 1 ) {
                 if( d.customer.status == 10 ) {
-                    return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscription.updateCustomer(event, event.srcElement.innerHTML, '" + d.customer.customer_id + "'); return false;\">Unsubscribe</button>";
+                    return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscription.updateCustomer(event, event.target.innerHTML, '" + d.customer.customer_id + "'); return false;\">Unsubscribe</button>";
                 } else {
-                    return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscription.updateCustomer(event, event.srcElement.innerHTML, '" + d.customer.customer_id + "'); return false;\">Subscribe</button>";
+                    return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscription.updateCustomer(event, event.target.innerHTML, '" + d.customer.customer_id + "'); return false;\">Subscribe</button>";
                 }
             }
         };
@@ -163,9 +163,9 @@ function ciniki_subscriptions_main() {
                         return false;
                     }
                     if( status == 10 ) {
-                        e.srcElement.innerHTML = 'Unsubscribe';
+                        e.target.innerHTML = 'Unsubscribe';
                     } else {
-                        e.srcElement.innerHTML = 'Subscribe';
+                        e.target.innerHTML = 'Subscribe';
                     }
                     var p = M.ciniki_subscriptions_main.subscription;
                     p.data.customers = rsp.latest;
@@ -263,9 +263,9 @@ function ciniki_subscriptions_main() {
                 return d.customer.display_name;
             } else if( j == 1 ) {
                 if( d.customer.status == 10 ) {
-                    return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscribers.updateCustomer(event, event.srcElement.innerHTML, '" + d.customer.customer_id + "'); return false;\">Unsubscribe</button>";
+                    return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscribers.updateCustomer(event, event.target.innerHTML, '" + d.customer.customer_id + "'); return false;\">Unsubscribe</button>";
                 } else {
-                    return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscribers.updateCustomer(event, event.srcElement.innerHTML, '" + d.customer.customer_id + "'); return false;\">Subscribe</button>";
+                    return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscribers.updateCustomer(event, event.target.innerHTML, '" + d.customer.customer_id + "'); return false;\">Subscribe</button>";
                 }
             }
         };
@@ -283,9 +283,9 @@ function ciniki_subscriptions_main() {
                 return d.customer.display_name;
             } else if( j == 1 ) {
                 if( d.customer.status == 10 ) {
-                    return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscribers.updateCustomer(event, event.srcElement.innerHTML, '" + d.customer.customer_id + "'); return false;\">Unsubscribe</button>";
+                    return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscribers.updateCustomer(event, event.target.innerHTML, '" + d.customer.customer_id + "'); return false;\">Unsubscribe</button>";
                 } else {
-                    return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscribers.updateCustomer(event, event.srcElement.innerHTML', '" + d.customer.customer_id + "'); return false;\">Subscribe</button>";
+                    return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscribers.updateCustomer(event, event.target.innerHTML', '" + d.customer.customer_id + "'); return false;\">Subscribe</button>";
                 }
             }
         };
@@ -309,9 +309,9 @@ function ciniki_subscriptions_main() {
                         return false;
                     }
                     if( status == 10 ) {
-                        e.srcElement.innerHTML = 'Unsubscribe';
+                        e.target.innerHTML = 'Unsubscribe';
                     } else {
-                        e.srcElement.innerHTML = 'Subscribe';
+                        e.target.innerHTML = 'Subscribe';
                     }
                     var p = M.ciniki_subscriptions_main.subscribers;
                     p.data.customers = rsp.subscribers;
