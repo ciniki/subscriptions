@@ -74,7 +74,7 @@ function ciniki_subscriptions_downloadMailMerge($ciniki) {
         return $rc;
     }
     if( !isset($rc['rows']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2388', 'msg'=>'No customers found'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.4', 'msg'=>'No customers found'));
     }
     $addresses = $rc['rows'];
 

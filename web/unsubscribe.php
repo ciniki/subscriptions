@@ -78,7 +78,7 @@ function ciniki_subscriptions_web_unsubscribe(&$ciniki, $settings, $business_id,
                 ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
                 $rc = ciniki_core_dbQueryList($ciniki, $strsql, 'ciniki.bugs', 'user_ids', 'user_id');
                 if( $rc['stat'] != 'ok' || !isset($rc['user_ids']) || !is_array($rc['user_ids']) ) {
-                    return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1056', 'msg'=>'Unable to find business owners', 'err'=>$rc['err']));
+                    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.11', 'msg'=>'Unable to find business owners', 'err'=>$rc['err']));
                 }
                 
                 foreach($rc['user_ids'] as $user_id) {

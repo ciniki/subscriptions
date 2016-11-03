@@ -58,7 +58,7 @@ function ciniki_subscriptions_stats($ciniki) {
         . "";
     $rc = ciniki_core_dbRspQuery($ciniki, $strsql, 'ciniki.subscriptions', 'subscriptions', 'subscription', array('stat'=>'ok', 'subscriptions'=>array()));
     if( $rc['stat'] != 'ok' ) { 
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'386', 'msg'=>'Unable to retrieve subscriptions', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.5', 'msg'=>'Unable to retrieve subscriptions', 'err'=>$rc['err']));
     }
     if( !isset($rc['subscriptions']) ) {
         return array('stat'=>'ok', 'subscriptions'=>array());

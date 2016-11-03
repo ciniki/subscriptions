@@ -13,7 +13,7 @@
 function ciniki_subscriptions_hooks_emailList($ciniki, $business_id, $args) {
 
     if( !isset($args['subscription_ids']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2357', 'msg'=>'No subscriptions specified'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.1', 'msg'=>'No subscriptions specified'));
     }
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');

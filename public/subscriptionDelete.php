@@ -52,7 +52,7 @@ function ciniki_subscriptions_subscriptionDelete(&$ciniki) {
         return $rc;
     }
     if( !isset($rc['subscription']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2340', 'msg'=>'The subscription does not exist'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.6', 'msg'=>'The subscription does not exist'));
     }
     $subscription_uuid = $rc['subscription']['uuid'];
 
@@ -69,10 +69,10 @@ function ciniki_subscriptions_subscriptionDelete(&$ciniki) {
                 'object_id'=>$args['subscription_id'],
                 ));
             if( $rc['stat'] != 'ok' ) {
-                return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2341', 'msg'=>'Unable to check if subscription is still be used', 'err'=>$rc['err']));
+                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.7', 'msg'=>'Unable to check if subscription is still be used', 'err'=>$rc['err']));
             }
             if( $rc['used'] != 'no' ) {
-                return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2342', 'msg'=>"Subscription is still in use. " . $rc['msg']));
+                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.8', 'msg'=>"Subscription is still in use. " . $rc['msg']));
             }
         }
     }
