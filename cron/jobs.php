@@ -24,7 +24,7 @@ function ciniki_subscriptions_cron_jobs($ciniki) {
     $strsql = "DELETE FROM ciniki_subscription_signups WHERE date_added < DATE_SUB(UTC_TIMESTAMP(), INTERVAL 24 HOUR) ";
     $rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.subscriptions');
     if( $rc['stat'] != 'ok' ) {
-        ciniki_cron_logMsg($ciniki, 0, array('code'=>'3288', 'msg'=>'Unable to remove 24 hour old subscription signups.',
+        ciniki_cron_logMsg($ciniki, 0, array('code'=>'ciniki.subscriptions.12', 'msg'=>'Unable to remove 24 hour old subscription signups.',
             'severity'=>50, 'err'=>$rc['err']));
     }
 
