@@ -24,7 +24,7 @@ function ciniki_subscriptions_subscriptionList($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'customer_id'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Customer'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -34,16 +34,16 @@ function ciniki_subscriptions_subscriptionList($ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.subscriptionList'); 
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['tnid'], 'ciniki.subscriptions.subscriptionList'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
 
     //
-    // Get the number of orders in each status for the business, 
+    // Get the number of orders in each status for the tenant, 
     // if no rows found, then return empty array
     //
     if( isset($args['customer_id']) && $args['customer_id'] > 0 ) {
@@ -52,14 +52,14 @@ function ciniki_subscriptions_subscriptionList($ciniki) {
             . "FROM ciniki_subscriptions "
             . "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
                 . "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $args['customer_id']) . "') "
-            . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "ORDER BY ciniki_subscriptions.name "
             . "";
     } else {
         $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, "
             . "ciniki_subscriptions.flags "
             . "FROM ciniki_subscriptions "
-            . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "ORDER BY ciniki_subscriptions.name "
             . "";
     }

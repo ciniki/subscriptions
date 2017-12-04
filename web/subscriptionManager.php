@@ -9,7 +9,7 @@
 // Returns
 // -------
 //
-function ciniki_subscriptions_web_subscriptionManager(&$ciniki, $settings, $business_id) {
+function ciniki_subscriptions_web_subscriptionManager(&$ciniki, $settings, $tnid) {
 
     if( isset($ciniki['session']['customer']['id']) && $ciniki['session']['customer']['id'] > 0 ) {
         $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, "
@@ -17,14 +17,14 @@ function ciniki_subscriptions_web_subscriptionManager(&$ciniki, $settings, $busi
             . "FROM ciniki_subscriptions "
             . "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
                 . "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['customer']['id']) . "') "
-            . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND (ciniki_subscriptions.flags&0x01) = 0x01 "
             . "ORDER BY ciniki_subscriptions.name "
             . "";
     } else {
         $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, 'no' AS subscribed "
             . "FROM ciniki_subscriptions "
-            . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND (ciniki_subscriptions.flags&0x01) = 0x01 "
             . "ORDER BY ciniki_subscriptions.name "
             . "";
@@ -128,8 +128,8 @@ function ciniki_subscriptions_web_subscriptionManager(&$ciniki, $settings, $busi
                 //
                 // Insert signup data into database
                 //
-                $strsql = "INSERT INTO ciniki_subscription_signups (business_id, signup_key, signup_data, date_added) VALUES ("
-                    . "'" . ciniki_core_dbQuote($ciniki, $business_id) . "', "
+                $strsql = "INSERT INTO ciniki_subscription_signups (tnid, signup_key, signup_data, date_added) VALUES ("
+                    . "'" . ciniki_core_dbQuote($ciniki, $tnid) . "', "
                     . "'" . ciniki_core_dbQuote($ciniki, $signup_key) . "', "
                     . "'" . ciniki_core_dbQuote($ciniki, serialize($signup_data)) . "', "
                     . "UTC_TIMESTAMP() "
@@ -154,7 +154,7 @@ function ciniki_subscriptions_web_subscriptionManager(&$ciniki, $settings, $busi
                 // Send email
                 //
                 ciniki_core_loadMethod($ciniki, 'ciniki', 'mail', 'hooks', 'addMessage');
-                $rc = ciniki_mail_hooks_addMessage($ciniki, $business_id, array(
+                $rc = ciniki_mail_hooks_addMessage($ciniki, $tnid, array(
                     'object'=>'ciniki.subscriptions.signup',
                     'object_id'=>$signup_key,
                     'customer_id'=>0,
@@ -172,7 +172,7 @@ function ciniki_subscriptions_web_subscriptionManager(&$ciniki, $settings, $busi
                     $display_form = 'no';
                     $blocks[] = array('type'=>'formmessage', 'level'=>'success', 'message'=>'We have sent you a confirmation message. '
                         . 'Please check your email and click on the link provided to complete your subscription.');
-                    $ciniki['emailqueue'][] = array('mail_id'=>$rc['id'], 'business_id'=>$business_id);
+                    $ciniki['emailqueue'][] = array('mail_id'=>$rc['id'], 'tnid'=>$tnid);
                 }
             }
         }

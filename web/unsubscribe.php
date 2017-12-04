@@ -8,7 +8,7 @@
 // -------
 // <rsp stat='ok' id='34' />
 //
-function ciniki_subscriptions_web_unsubscribe(&$ciniki, $settings, $business_id, $subscription_id, $customer_id) {
+function ciniki_subscriptions_web_unsubscribe(&$ciniki, $settings, $tnid, $subscription_id, $customer_id) {
 
     //  
     // Turn off autocommit
@@ -33,11 +33,11 @@ function ciniki_subscriptions_web_unsubscribe(&$ciniki, $settings, $business_id,
         . "CONCAT_WS(' ', ciniki_customers.first, ciniki_customers.last) AS customer_name "
         . "FROM ciniki_subscription_customers "
         . "LEFT JOIN ciniki_subscriptions ON (ciniki_subscription_customers.subscription_id = ciniki_subscriptions.id "
-            . "AND ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "') "
+            . "AND ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "') "
         . "LEFT JOIN ciniki_customers ON (ciniki_subscription_customers.customer_id = ciniki_customers.id "
-            . "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "') "
+            . "AND ciniki_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "') "
         . "WHERE ciniki_subscription_customers.subscription_id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' "
-        . "AND ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "AND ciniki_subscription_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $customer_id) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.mail', 'subscription');
@@ -62,15 +62,15 @@ function ciniki_subscriptions_web_unsubscribe(&$ciniki, $settings, $business_id,
                     ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
                     return $rc;
                 }
-                ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
+                ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $tnid, 
                     2, 'ciniki_subscription_customers', $customer_subscription_id, 'status', '60');
                 $db_updated = 1;
             } else {
                 //
                 //  Email the owners a bug was added to the system.
                 //
-                $strsql = "SELECT user_id FROM ciniki_business_users "
-                    . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+                $strsql = "SELECT user_id FROM ciniki_tenant_users "
+                    . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
                     . "AND package = 'ciniki' "
                     . "AND (permission_group = 'owners') "
                     . "AND status = 10 "
@@ -78,7 +78,7 @@ function ciniki_subscriptions_web_unsubscribe(&$ciniki, $settings, $business_id,
                 ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
                 $rc = ciniki_core_dbQueryList($ciniki, $strsql, 'ciniki.bugs', 'user_ids', 'user_id');
                 if( $rc['stat'] != 'ok' || !isset($rc['user_ids']) || !is_array($rc['user_ids']) ) {
-                    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.11', 'msg'=>'Unable to find business owners', 'err'=>$rc['err']));
+                    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.11', 'msg'=>'Unable to find tenant owners', 'err'=>$rc['err']));
                 }
                 
                 foreach($rc['user_ids'] as $user_id) {
@@ -109,10 +109,10 @@ function ciniki_subscriptions_web_unsubscribe(&$ciniki, $settings, $business_id,
         //
         // Update the customers subscription
         //
-        $strsql = "INSERT INTO ciniki_subscription_customers (uuid, business_id, subscription_id, customer_id, status, date_added, last_updated "
+        $strsql = "INSERT INTO ciniki_subscription_customers (uuid, tnid, subscription_id, customer_id, status, date_added, last_updated "
             . ") VALUES ("
             . "'" . ciniki_core_dbQuote($ciniki, $uuid) . "', "
-            . "'" . ciniki_core_dbQuote($ciniki, $business_id) . "', "
+            . "'" . ciniki_core_dbQuote($ciniki, $tnid) . "', "
             . "'" . ciniki_core_dbQuote($ciniki, $subscription_id) . "', "
             . "'" . ciniki_core_dbQuote($ciniki, $customer_id) . "', "
             . "'" . ciniki_core_dbQuote($ciniki, '60') . "', "
@@ -129,13 +129,13 @@ function ciniki_subscriptions_web_unsubscribe(&$ciniki, $settings, $business_id,
         //
         // Log the change in the database
         //
-        ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
+        ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $tnid, 
             1, 'ciniki_subscription_customers', $customer_subscription_id, 'uuid', $uuid);
-        ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
+        ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $tnid, 
             1, 'ciniki_subscription_customers', $customer_subscription_id, 'subscription_id', $subscription_id);
-        ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
+        ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $tnid, 
             1, 'ciniki_subscription_customers', $customer_subscription_id, 'customer_id', $customer_id);
-        ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $business_id, 
+        ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $tnid, 
             1, 'ciniki_subscription_customers', $customer_subscription_id, 'status', '60');
         $db_updated = 1;
     }
@@ -146,7 +146,7 @@ function ciniki_subscriptions_web_unsubscribe(&$ciniki, $settings, $business_id,
     //
     if( $db_updated > 0 ) {
         $strsql = "UPDATE ciniki_subscriptions SET last_updated = UTC_TIMESTAMP() "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' ";
         $rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.subscriptions');
         if( $rc['stat'] != 'ok' ) { 
@@ -164,12 +164,12 @@ function ciniki_subscriptions_web_unsubscribe(&$ciniki, $settings, $business_id,
     }
 
     //
-    // Update the last_change date in the business modules
+    // Update the last_change date in the tenant modules
     // Ignore the result, as we don't want to stop user updates if this fails.
     //
     if( $db_updated > 0 ) {
-        ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
-        ciniki_businesses_updateModuleChangeDate($ciniki, $business_id, 'ciniki', 'subscriptions');
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'updateModuleChangeDate');
+        ciniki_tenants_updateModuleChangeDate($ciniki, $tnid, 'ciniki', 'subscriptions');
 
         $ciniki['syncqueue'][] = array('push'=>'ciniki.subscriptions.customer', 
             'args'=>array('id'=>$customer_subscription_id));

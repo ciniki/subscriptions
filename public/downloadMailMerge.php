@@ -23,7 +23,7 @@ function ciniki_subscriptions_downloadMailMerge($ciniki) {
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'), 
         ));
     if( $rc['stat'] != 'ok' ) {
@@ -32,10 +32,10 @@ function ciniki_subscriptions_downloadMailMerge($ciniki) {
     $args = $rc['args'];
     
     //
-    // Check access to business_id, and the subscription
+    // Check access to tnid, and the subscription
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $ac = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.downloadMailMerge');
+    $ac = ciniki_subscriptions_checkAccess($ciniki, $args['tnid'], 'ciniki.subscriptions.downloadMailMerge');
     if( $ac['stat'] != 'ok' ) {
         return $ac;
     }
@@ -55,19 +55,19 @@ function ciniki_subscriptions_downloadMailMerge($ciniki) {
         . "FROM ciniki_subscriptions "
         . "INNER JOIN ciniki_subscription_customers ON ("
             . "ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
-            . "AND ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND ciniki_subscription_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "AND ciniki_subscription_customers.status = 10 "
             . ") "
         . "INNER JOIN ciniki_customers ON ("
             . "ciniki_subscription_customers.customer_id = ciniki_customers.id "
-            . "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND ciniki_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . ") "
         . "INNER JOIN ciniki_customer_addresses ON ("
             . "ciniki_customers.id = ciniki_customer_addresses.customer_id "
             . "AND (ciniki_customer_addresses.flags&0x04) = 0x04 "
             . ") "
         . "WHERE ciniki_subscriptions.id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
-        . "AND ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.subscriptions', 'item');
     if( $rc['stat'] != 'ok' ) {

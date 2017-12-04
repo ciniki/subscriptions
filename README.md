@@ -1,7 +1,7 @@
-Ciniki - Small Business Management Platform
+Ciniki - Multitenant Cloud Platform
 ===========================================
 
-The subscriptions module stores subscription lists of customers for a business.
+The subscriptions module stores subscription lists of customers for a tenant.
 
 License
 -------

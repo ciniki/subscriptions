@@ -7,14 +7,14 @@
 // Arguments
 // ---------
 // ciniki:
-// business_id:         The business ID to check the session user against.
+// tnid:         The tenant ID to check the session user against.
 // method:              The requested method.
 //
 // Returns
 // -------
 // <rsp stat='ok' />
 //
-function ciniki_subscriptions_hooks_customerSubscriptions($ciniki, $business_id, $args) {
+function ciniki_subscriptions_hooks_customerSubscriptions($ciniki, $tnid, $args) {
 
     $subscriptions = array();
     if( isset($args['customer_id']) && $args['customer_id'] > 0 ) {
@@ -22,10 +22,10 @@ function ciniki_subscriptions_hooks_customerSubscriptions($ciniki, $business_id,
             . "ciniki_subscriptions.name, "
             . "ciniki_subscriptions.description "
             . "FROM ciniki_subscription_customers, ciniki_subscriptions "
-            . "WHERE ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE ciniki_subscription_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $args['customer_id']) . "' "
             . "AND ciniki_subscription_customers.subscription_id = ciniki_subscriptions.id "
-            . "AND ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND ciniki_subscription_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND ciniki_subscription_customers.status = 10 "  // Customer is active subscription
             . "AND ciniki_subscriptions.status = 10 "           // Subscription is active, no archived/deleted
             . "ORDER BY name "

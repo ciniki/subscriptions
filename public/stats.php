@@ -24,7 +24,7 @@ function ciniki_subscriptions_stats($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -33,16 +33,16 @@ function ciniki_subscriptions_stats($ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.stats'); 
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['tnid'], 'ciniki.subscriptions.stats'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
 
     //
-    // Get the number of orders in each status for the business, 
+    // Get the number of orders in each status for the tenant, 
     // if no rows found, then return empty array
     //
     $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, "
@@ -52,7 +52,7 @@ function ciniki_subscriptions_stats($ciniki) {
         . "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
             . "AND ciniki_subscription_customers.customer_id > 0 "
             . "AND ciniki_subscription_customers.status = 10 ) "
-        . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "GROUP BY ciniki_subscriptions.id "
         . "ORDER BY name "
         . "";

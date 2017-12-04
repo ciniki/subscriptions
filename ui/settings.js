@@ -35,7 +35,7 @@ function ciniki_subscriptions_settings() {
         // Callback for the field history
         //  
         this.main.fieldHistoryArgs = function(s, i) {
-            return {'method':'ciniki.subscriptions.settingsHistory', 'args':{'business_id':M.curBusinessID, 'setting':i}};
+            return {'method':'ciniki.subscriptions.settingsHistory', 'args':{'tnid':M.curTenantID, 'setting':i}};
         };
 
         this.main.addButton('save', 'Save', 'M.ciniki_subscriptions_settings.saveSettings();');
@@ -66,10 +66,10 @@ function ciniki_subscriptions_settings() {
     }
 
     //
-    // Grab the stats for the business from the database and present the list of orders.
+    // Grab the stats for the tenant from the database and present the list of orders.
     //
     this.showMain = function(cb) {
-        M.api.getJSONCb('ciniki.subscriptions.settingsGet', {'business_id':M.curBusinessID}, function(rsp) {
+        M.api.getJSONCb('ciniki.subscriptions.settingsGet', {'tnid':M.curTenantID}, function(rsp) {
             if( rsp.stat != 'ok' ) {
                 M.api.err(rsp);
                 return false;
@@ -84,7 +84,7 @@ function ciniki_subscriptions_settings() {
     this.saveSettings = function() {
         var c = this.main.serializeForm('no');
         if( c != '' ) {
-            M.api.postJSONCb('ciniki.subscriptions.settingsUpdate', {'business_id':M.curBusinessID}, c, function(rsp) {
+            M.api.postJSONCb('ciniki.subscriptions.settingsUpdate', {'tnid':M.curTenantID}, c, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;

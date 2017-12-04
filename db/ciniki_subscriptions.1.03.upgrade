@@ -1,5 +1,5 @@
 #
 # This file will upgrade the database table subscriptions to version 1.03.
 #
-ALTER TABLE ciniki_subscriptions ADD COLUMN status tinyint unsigned not null after business_id;
+ALTER TABLE ciniki_subscriptions ADD COLUMN status tinyint unsigned not null after tnid;
 ALTER TABLE ciniki_subscriptions COMMENT='v1.03';

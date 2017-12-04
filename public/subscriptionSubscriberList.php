@@ -21,7 +21,7 @@ function ciniki_subscriptions_subscriptionSubscriberList($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -31,10 +31,10 @@ function ciniki_subscriptions_subscriptionSubscriberList($ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.subscriptionSubscriberList'); 
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['tnid'], 'ciniki.subscriptions.subscriptionSubscriberList'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -46,10 +46,10 @@ function ciniki_subscriptions_subscriptionSubscriberList($ciniki) {
         . "IFNULL(ciniki_customers.member_status, 0) AS member_status "
         . "FROM ciniki_subscription_customers, ciniki_customers "
         . "WHERE ciniki_subscription_customers.subscription_id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
-        . "AND ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND ciniki_subscription_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND ciniki_subscription_customers.customer_id = ciniki_customers.id "
         . "AND ciniki_subscription_customers.status = 10 "
-        . "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND ciniki_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "ORDER BY ciniki_customers.sort_name ASC "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');

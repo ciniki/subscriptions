@@ -23,7 +23,7 @@ function ciniki_subscriptions_downloadXLS($ciniki) {
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'), 
         '_subscription_id'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Subscription'),
         '_subscription_name'=>array('required'=>'no', 'default'=>'No', 'blank'=>'yes', 'name'=>'Subscription Name'),
@@ -43,10 +43,10 @@ function ciniki_subscriptions_downloadXLS($ciniki) {
     $args = $rc['args'];
     
     //
-    // Check access to business_id, and the subscription
+    // Check access to tnid, and the subscription
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $ac = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.downloadXLS');
+    $ac = ciniki_subscriptions_checkAccess($ciniki, $args['tnid'], 'ciniki.subscriptions.downloadXLS');
     if( $ac['stat'] != 'ok' ) {
         return $ac;
     }
@@ -71,11 +71,11 @@ function ciniki_subscriptions_downloadXLS($ciniki) {
             . "LEFT JOIN ciniki_customer_addresses ON (ciniki_customers.id = ciniki_customer_addresses.customer_id "
                 . "AND ciniki_customer_addresses.flags & 0x04 = 0x04 ) "
             . "WHERE ciniki_subscriptions.id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
-            . "AND ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "AND ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
             . "AND ciniki_subscription_customers.status = 10 "
             . "AND ciniki_subscription_customers.customer_id = ciniki_customers.id "
-            . "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND ciniki_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "";
 
     } else {
@@ -84,11 +84,11 @@ function ciniki_subscriptions_downloadXLS($ciniki) {
             . "ciniki_customers.first, ciniki_customers.last, ciniki_customers.primary_email, ciniki_customers.alternate_email "
             . "FROM ciniki_subscriptions, ciniki_subscription_customers, ciniki_customers "
             . "WHERE ciniki_subscriptions.id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
-            . "AND ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "AND ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
             . "AND ciniki_subscription_customers.status = 10 "
             . "AND ciniki_subscription_customers.customer_id = ciniki_customers.id "
-            . "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND ciniki_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "";
     }
     //

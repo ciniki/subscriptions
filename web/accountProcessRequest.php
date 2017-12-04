@@ -9,7 +9,7 @@
 // Returns
 // -------
 //
-function ciniki_subscriptions_web_accountProcessRequest(&$ciniki, $settings, $business_id, $args) {
+function ciniki_subscriptions_web_accountProcessRequest(&$ciniki, $settings, $tnid, $args) {
 
     $page = array(
         'title'=>'Mailing Lists',
@@ -29,7 +29,7 @@ function ciniki_subscriptions_web_accountProcessRequest(&$ciniki, $settings, $bu
     // Load the settings
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash');
-    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_subscriptions_settings', 'business_id', $business_id, 'ciniki.subscriptions', 'settings', '');
+    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_subscriptions_settings', 'tnid', $tnid, 'ciniki.subscriptions', 'settings', '');
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -52,13 +52,13 @@ function ciniki_subscriptions_web_accountProcessRequest(&$ciniki, $settings, $bu
             . "FROM ciniki_subscriptions "
             . "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
                 . "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['customer']['id']) . "') "
-            . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND (ciniki_subscriptions.flags&0x01) = 0x01 "
             . "";
     } else {
         $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, '0' AS subscribed "
             . "FROM ciniki_subscriptions "
-            . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND (ciniki_subscriptions.flags&0x01) = 0x01 "
             . "";
     }
@@ -85,13 +85,13 @@ function ciniki_subscriptions_web_accountProcessRequest(&$ciniki, $settings, $bu
             // Check if the subscribed to the subscription
             if( isset($_POST["subscription-$sid"]) && $_POST["subscription-$sid"] == $sid ) {
                 if( $subscription['subscribed'] == 'no' ) {
-                    ciniki_subscriptions_web_subscribe($ciniki, $settings, $business_id, $sid, $ciniki['session']['customer']['id']);
+                    ciniki_subscriptions_web_subscribe($ciniki, $settings, $tnid, $sid, $ciniki['session']['customer']['id']);
                     $subscription_err_msg = 'Your subscriptions have been updated.';
                     $subscriptions[$snum]['subscribed'] = 'yes';
                 }
             } else {
                 if( $subscription['subscribed'] == 'yes' ) {
-                    ciniki_subscriptions_web_unsubscribe($ciniki, $settings, $business_id, $sid, $ciniki['session']['customer']['id']);
+                    ciniki_subscriptions_web_unsubscribe($ciniki, $settings, $tnid, $sid, $ciniki['session']['customer']['id']);
                     $subscription_err_msg = 'Your subscriptions have been updated.';
                     $subscriptions[$snum]['subscribed'] = 'no';
                 }

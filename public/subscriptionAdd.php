@@ -22,7 +22,7 @@ function ciniki_subscriptions_subscriptionAdd(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'name'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Name'),
         'status'=>array('required'=>'no', 'blank'=>'no', 'default'=>'10', 'name'=>'Status'),
         'flags'=>array('required'=>'no', 'blank'=>'no', 'default'=>'0', 'name'=>'Flags'),
@@ -35,10 +35,10 @@ function ciniki_subscriptions_subscriptionAdd(&$ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.subscriptionAdd'); 
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['tnid'], 'ciniki.subscriptions.subscriptionAdd'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -48,7 +48,7 @@ function ciniki_subscriptions_subscriptionAdd(&$ciniki) {
     // Add the subscription
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
-    $rc = ciniki_core_objectAdd($ciniki, $args['business_id'], 'ciniki.subscriptions.subscription', $args, 0x07);
+    $rc = ciniki_core_objectAdd($ciniki, $args['tnid'], 'ciniki.subscriptions.subscription', $args, 0x07);
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -59,7 +59,7 @@ function ciniki_subscriptions_subscriptionAdd(&$ciniki) {
     //
     if( isset($modules['ciniki.web']) ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'web', 'private', 'settingsUpdateSubscriptions');
-        $rc = ciniki_web_settingsUpdateSubscriptions($ciniki, $modules, $args['business_id']);
+        $rc = ciniki_web_settingsUpdateSubscriptions($ciniki, $modules, $args['tnid']);
         if( $rc['stat'] != 'ok' ) {
             // Don't return error code to user, they successfully updated the record
             error_log("ERR: " . $rc['code'] . ' - ' . $rc['msg']);

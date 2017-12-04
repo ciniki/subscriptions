@@ -14,7 +14,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:         The ID of the business to get the details for.
+// tnid:         The ID of the tenant to get the details for.
 // key:                 The detail key to get the history for.
 //
 // Returns
@@ -34,7 +34,7 @@ function ciniki_subscriptions_getCustomerHistory($ciniki) {
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'), 
         'customer_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Customer'), 
         'field'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Field'), 
@@ -45,10 +45,10 @@ function ciniki_subscriptions_getCustomerHistory($ciniki) {
     $args = $rc['args'];
     
     //
-    // Check access to business_id as owner, or sys admin
+    // Check access to tnid as owner, or sys admin
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.getCustomerHistory');
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['tnid'], 'ciniki.subscriptions.getCustomerHistory');
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -57,7 +57,7 @@ function ciniki_subscriptions_getCustomerHistory($ciniki) {
     // Get the id for this customer-subscription combination
     //
     $strsql = "SELECT ciniki_subscription_customers.id FROM ciniki_subscription_customers, ciniki_subscriptions "
-        . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND ciniki_subscriptions.id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
         . "AND ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
         . "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $args['customer_id']) . "' "
@@ -72,6 +72,6 @@ function ciniki_subscriptions_getCustomerHistory($ciniki) {
     $customer_subscription_id = $rc['subscription']['id'];
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistory');
-    return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $args['business_id'], 'ciniki_subscription_customers', $customer_subscription_id, $args['field']);
+    return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $args['tnid'], 'ciniki_subscription_customers', $customer_subscription_id, $args['field']);
 }
 ?>

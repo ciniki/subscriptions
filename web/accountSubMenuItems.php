@@ -9,7 +9,7 @@
 // Returns
 // -------
 //
-function ciniki_subscriptions_web_accountSubMenuItems($ciniki, $settings, $business_id) {
+function ciniki_subscriptions_web_accountSubMenuItems($ciniki, $settings, $tnid) {
 
     $submenu = array();
 
@@ -18,7 +18,7 @@ function ciniki_subscriptions_web_accountSubMenuItems($ciniki, $settings, $busin
     //
     $strsql = "SELECT COUNT(*) AS num "
         . "FROM ciniki_subscriptions "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND status = 10 "
         . "AND (flags&0x01) = 0x01 "
         . "";

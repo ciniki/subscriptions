@@ -71,7 +71,7 @@ function ciniki_subscriptions_main() {
         }
         // Field history
         this.edit.fieldHistoryArgs = function(s, i) {
-            return {'method':'ciniki.subscriptions.subscriptionHistory', 'args':{'business_id':M.curBusinessID, 
+            return {'method':'ciniki.subscriptions.subscriptionHistory', 'args':{'tnid':M.curTenantID, 
                 'subscription_id':this.subscription_id, 'field':i}};
         };
         this.edit.addButton('save', 'Save', 'M.ciniki_subscriptions_main.saveSubscription();');
@@ -111,7 +111,7 @@ function ciniki_subscriptions_main() {
         this.subscription.fieldValue = function(s, i, d) { return ''; }
         this.subscription.liveSearchCb = function(s, i, value) {
             if( s == 'search' && value != '' ) {
-                M.api.getJSONBgCb('ciniki.subscriptions.searchCustomers', {'business_id':M.curBusinessID, 
+                M.api.getJSONBgCb('ciniki.subscriptions.searchCustomers', {'tnid':M.curTenantID, 
                     'subscription_id':M.ciniki_subscriptions_main.subscription.subscription_id,
                     'start_needle':value, 'limit':'10'}, 
                     function(rsp) { 
@@ -133,7 +133,7 @@ function ciniki_subscriptions_main() {
         };
         this.subscription.liveSearchResultRowFn = function(s, f, i, j, d) { 
             var ctype = '';
-            if( (M.curBusiness.modules['ciniki.customers'].flags&0x02) > 0 
+            if( (M.curTenant.modules['ciniki.customers'].flags&0x02) > 0 
                 && d.customer.member_status > 0 
                 ) {
                 ctype = ', \'member\':\'yes\'';
@@ -145,7 +145,7 @@ function ciniki_subscriptions_main() {
         };
         this.subscription.rowFn = function(s, i, d) {
             var ctype = '';
-            if( (M.curBusiness.modules['ciniki.customers'].flags&0x02) > 0 
+            if( (M.curTenant.modules['ciniki.customers'].flags&0x02) > 0 
                 && d.customer.member_status > 0 
                 ) {
                 ctype = ', \'member\':\'yes\'';
@@ -156,7 +156,7 @@ function ciniki_subscriptions_main() {
             var status = 10;
             if( action == 'Unsubscribe' ) { status = 60; }
             M.api.getJSONCb('ciniki.subscriptions.updateSubscriber', 
-                {'business_id':M.curBusinessID, 'subscription_id':this.subscription_id, 
+                {'tnid':M.curTenantID, 'subscription_id':this.subscription_id, 
                 'customer_id':cid, 'status':status, 'latest':'yes'}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
@@ -249,7 +249,7 @@ function ciniki_subscriptions_main() {
         this.subscribers.sectionData = function(s) { return this.data[s]; }
         this.subscribers.liveSearchCb = function(s, i, value) {
             if( s == 'search' && value != '' ) {
-                M.api.getJSONBgCb('ciniki.subscriptions.searchCustomers', {'business_id':M.curBusinessID, 
+                M.api.getJSONBgCb('ciniki.subscriptions.searchCustomers', {'tnid':M.curTenantID, 
                     'subscription_id':M.ciniki_subscriptions_main.subscribers.subscription_id,
                     'start_needle':value, 'limit':'10'}, 
                     function(rsp) { 
@@ -271,7 +271,7 @@ function ciniki_subscriptions_main() {
         };
         this.subscribers.liveSearchResultRowFn = function(s, f, i, j, d) { 
             var ctype = '';
-            if( (M.curBusiness.modules['ciniki.customers'].flags&0x02) > 0 
+            if( (M.curTenant.modules['ciniki.customers'].flags&0x02) > 0 
                 && d.customer.member_status > 0 
                 ) {
                 ctype = ', \'member\':\'yes\'';
@@ -291,7 +291,7 @@ function ciniki_subscriptions_main() {
         };
         this.subscribers.rowFn = function(s, i, d) {
             var ctype = '';
-            if( (M.curBusiness.modules['ciniki.customers'].flags&0x02) > 0 
+            if( (M.curTenant.modules['ciniki.customers'].flags&0x02) > 0 
                 && d.customer.member_status > 0 
                 ) {
                 ctype = ', \'member\':\'yes\'';
@@ -302,7 +302,7 @@ function ciniki_subscriptions_main() {
             var status = 10;
             if( action == 'Unsubscribe' ) { status = 60; }
             M.api.getJSONCb('ciniki.subscriptions.updateSubscriber', 
-                {'business_id':M.curBusinessID, 'subscription_id':this.subscription_id, 
+                {'tnid':M.curTenantID, 'subscription_id':this.subscription_id, 
                 'customer_id':cid, 'status':status, 'subscribers':'yes'}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
@@ -347,10 +347,10 @@ function ciniki_subscriptions_main() {
     }
 
     //
-    // Grab the subscriptions for the business, with stats information
+    // Grab the subscriptions for the tenant, with stats information
     //
     this.showMain = function(cb) {
-        var rsp = M.api.getJSONCb('ciniki.subscriptions.stats', {'business_id':M.curBusinessID}, function(rsp) {
+        var rsp = M.api.getJSONCb('ciniki.subscriptions.stats', {'tnid':M.curTenantID}, function(rsp) {
             if( rsp.stat != 'ok' ) {
                 M.api.err(rsp);
                 return false;
@@ -367,7 +367,7 @@ function ciniki_subscriptions_main() {
             this.subscription.subscription_id = sid;
         }
         var rsp = M.api.getJSONCb('ciniki.subscriptions.subscriptionGet', 
-            {'business_id':M.curBusinessID, 'subscription_id':this.subscription.subscription_id, 'latest':'yes'}, function(rsp) {
+            {'tnid':M.curTenantID, 'subscription_id':this.subscription.subscription_id, 'latest':'yes'}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
@@ -387,7 +387,7 @@ function ciniki_subscriptions_main() {
         }
         if( this.edit.subscription_id > 0 ) {
             var rsp = M.api.getJSONCb('ciniki.subscriptions.subscriptionGet', 
-                {'business_id':M.curBusinessID, 'subscription_id':this.edit.subscription_id}, function(rsp) {
+                {'tnid':M.curTenantID, 'subscription_id':this.edit.subscription_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
@@ -410,7 +410,7 @@ function ciniki_subscriptions_main() {
             var c = this.edit.serializeForm('no');
             if( c != '' ) {
                 var rsp = M.api.postJSONCb('ciniki.subscriptions.subscriptionUpdate', 
-                    {'business_id':M.curBusinessID, 
+                    {'tnid':M.curTenantID, 
                     'subscription_id':M.ciniki_subscriptions_main.edit.subscription_id}, c, function(rsp) {
                         if( rsp.stat != 'ok' ) {
                             M.api.err(rsp);
@@ -423,7 +423,7 @@ function ciniki_subscriptions_main() {
             }
         } else {
             var c = this.edit.serializeForm('yes');
-            var rsp = M.api.postJSONCb('ciniki.subscriptions.subscriptionAdd', {'business_id':M.curBusinessID}, c, function(rsp) {
+            var rsp = M.api.postJSONCb('ciniki.subscriptions.subscriptionAdd', {'tnid':M.curTenantID}, c, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
@@ -436,7 +436,7 @@ function ciniki_subscriptions_main() {
     this.deleteSubscription = function() {
         if( confirm("Are you sure you want to remove '" + this.subscription.data.name + "'? This will unsubscribe all customers from this list, and remove any history of the subscription.") ) {
             var rsp = M.api.getJSONCb('ciniki.subscriptions.subscriptionDelete', 
-                {'business_id':M.curBusinessID, 'subscription_id':M.ciniki_subscriptions_main.edit.subscription_id}, function(rsp) {
+                {'tnid':M.curTenantID, 'subscription_id':M.ciniki_subscriptions_main.edit.subscription_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
@@ -449,7 +449,7 @@ function ciniki_subscriptions_main() {
     this.showSubscribers = function(cb, sid) {
         if( sid != null ) { this.subscribers.subscription_id = sid; }
         M.api.getJSONCb('ciniki.subscriptions.subscriptionSubscriberList', 
-            {'business_id':M.curBusinessID, 'subscription_id':this.subscribers.subscription_id}, function(rsp) {
+            {'tnid':M.curTenantID, 'subscription_id':this.subscribers.subscription_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
@@ -462,13 +462,13 @@ function ciniki_subscriptions_main() {
     };
 
     this.downloadMailMerge = function(sid) {
-        M.api.openFile('ciniki.subscriptions.downloadMailMerge', {'business_id':M.curBusinessID, 'subscription_id':sid});
+        M.api.openFile('ciniki.subscriptions.downloadMailMerge', {'tnid':M.curTenantID, 'subscription_id':sid});
     };
 
     this.addAllCustomers = function(sid) {
         if( confirm("Are you sure you add all your customers to this mailing list?") ) {
             var rsp = M.api.getJSONCb('ciniki.subscriptions.subscriptionAddAllCustomers', 
-                {'business_id':M.curBusinessID, 'subscription_id':sid}, function(rsp) {
+                {'tnid':M.curTenantID, 'subscription_id':sid}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;

@@ -9,7 +9,7 @@
 // Returns
 // -------
 //
-function ciniki_subscriptions_web_processRequest(&$ciniki, $settings, $business_id, $args) {
+function ciniki_subscriptions_web_processRequest(&$ciniki, $settings, $tnid, $args) {
 
     $page = array(
         'title'=>'Mailing List',
@@ -27,14 +27,14 @@ function ciniki_subscriptions_web_processRequest(&$ciniki, $settings, $business_
             . "FROM ciniki_subscriptions "
             . "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
                 . "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['customer']['id']) . "') "
-            . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND (ciniki_subscriptions.flags&0x01) = 0x01 "
             . "ORDER BY ciniki_subscriptions.name "
             . "";
     } else {
         $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, 'no' AS subscribed "
             . "FROM ciniki_subscriptions "
-            . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND (ciniki_subscriptions.flags&0x01) = 0x01 "
             . "ORDER BY ciniki_subscriptions.name "
             . "";
@@ -63,7 +63,7 @@ function ciniki_subscriptions_web_processRequest(&$ciniki, $settings, $business_
         $strsql = "SELECT signup_data "
             . "FROM ciniki_subscription_signups "
             . "WHERE signup_key = '" . ciniki_core_dbQuote($ciniki, $_GET['k']) . "' "
-            . "AND business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.subscriptions', 'signup');
         if( $rc['stat'] != 'ok' ) {
@@ -82,14 +82,14 @@ function ciniki_subscriptions_web_processRequest(&$ciniki, $settings, $business_
             // Check if email already exists
             //
             ciniki_core_loadMethod($ciniki, 'ciniki', 'customers', 'hooks', 'customerLookup');
-            $rc = ciniki_customers_hooks_customerLookup($ciniki, $business_id, array('email'=>$signup_data['email']));
+            $rc = ciniki_customers_hooks_customerLookup($ciniki, $tnid, array('email'=>$signup_data['email']));
             if( $rc['stat'] == 'ok' && isset($rc['customers']) ) {
                 //
                 // Make sure their subscription is enabled
                 //
                 foreach($rc['customers'] as $customer_id => $customer) {
                     foreach($signup_data['subscriptions'] as $sid => $v) {
-                        $rc = ciniki_subscriptions_web_subscribe($ciniki, $settings, $business_id, $sid, $customer_id);
+                        $rc = ciniki_subscriptions_web_subscribe($ciniki, $settings, $tnid, $sid, $customer_id);
                         if( $rc['stat'] != 'ok' ) {
                             $errors = 'multi';
                             error_log("WEB-SUBSCRIPTIONS: Unable to subscribe customer $customer_id to subscription $sid");
@@ -101,7 +101,7 @@ function ciniki_subscriptions_web_processRequest(&$ciniki, $settings, $business_
                 // Create customer
                 //
                 ciniki_core_loadMethod($ciniki, 'ciniki', 'customers', 'web', 'customerAdd');
-                $rc = ciniki_customers_web_customerAdd($ciniki, $business_id, array(
+                $rc = ciniki_customers_web_customerAdd($ciniki, $tnid, array(
                     'name'=>$signup_data['name'],
                     'email_address'=>$signup_data['email'],
                     ));
@@ -116,7 +116,7 @@ function ciniki_subscriptions_web_processRequest(&$ciniki, $settings, $business_
                 //
                 if( $errors == 'no' ) {
                     foreach($signup_data['subscriptions'] as $sid => $v) {
-                        $rc = ciniki_subscriptions_web_subscribe($ciniki, $settings, $business_id, $sid, $customer_id);
+                        $rc = ciniki_subscriptions_web_subscribe($ciniki, $settings, $tnid, $sid, $customer_id);
                         if( $rc['stat'] != 'ok' ) {
                             $errors = 'multi';
                             error_log("WEB-SUBSCRIPTIONS: Unable to subscribe customer $customer_id to subscription $sid");
@@ -130,7 +130,7 @@ function ciniki_subscriptions_web_processRequest(&$ciniki, $settings, $business_
                 $page['blocks'][] = array('type'=>'formmessage', 'level'=>'success', 'message'=>'You have been subscribed.');
                 $strsql = "DELETE FROM ciniki_subscription_signups "
                     . "WHERE signup_key = '" . ciniki_core_dbQuote($ciniki, $_GET['k']) . "' "
-                    . "AND business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+                    . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
                     . "";
                 ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
                 $rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.subscriptions');
@@ -140,7 +140,7 @@ function ciniki_subscriptions_web_processRequest(&$ciniki, $settings, $business_
   
     if( $display == 'list' ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'web', 'subscriptionManager');
-        $rc = ciniki_subscriptions_web_subscriptionManager($ciniki, $settings, $business_id);
+        $rc = ciniki_subscriptions_web_subscriptionManager($ciniki, $settings, $tnid);
         if( $rc['stat'] != 'ok' ) {
             return $rc;
         }

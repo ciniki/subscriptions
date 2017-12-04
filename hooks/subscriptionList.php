@@ -7,18 +7,18 @@
 // Arguments
 // ---------
 // ciniki:
-// business_id:         The business ID to check the session user against.
+// tnid:         The tenant ID to check the session user against.
 // method:              The requested method.
 //
 // Returns
 // -------
 // <rsp stat='ok' />
 //
-function ciniki_subscriptions_hooks_subscriptionList($ciniki, $business_id, $args) {
+function ciniki_subscriptions_hooks_subscriptionList($ciniki, $tnid, $args) {
 
     $strsql = "SELECT id, name, description "
         . "FROM ciniki_subscriptions "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND status = 10 "
         . "ORDER BY name "
         . "";

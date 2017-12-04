@@ -22,7 +22,7 @@ function ciniki_subscriptions_settingsUpdate(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -31,10 +31,10 @@ function ciniki_subscriptions_settingsUpdate(&$ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.settingsUpdate'); 
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['tnid'], 'ciniki.subscriptions.settingsUpdate'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -67,8 +67,8 @@ function ciniki_subscriptions_settingsUpdate(&$ciniki) {
     //
     foreach($changelog_fields as $field) {
         if( isset($ciniki['request']['args'][$field]) ) {
-            $strsql = "INSERT INTO ciniki_subscriptions_settings (business_id, detail_key, detail_value, date_added, last_updated) "
-                . "VALUES ('" . ciniki_core_dbQuote($ciniki, $ciniki['request']['args']['business_id']) . "'"
+            $strsql = "INSERT INTO ciniki_subscriptions_settings (tnid, detail_key, detail_value, date_added, last_updated) "
+                . "VALUES ('" . ciniki_core_dbQuote($ciniki, $ciniki['request']['args']['tnid']) . "'"
                 . ", '" . ciniki_core_dbQuote($ciniki, $field) . "'"
                 . ", '" . ciniki_core_dbQuote($ciniki, $ciniki['request']['args'][$field]) . "'"
                 . ", UTC_TIMESTAMP(), UTC_TIMESTAMP()) "
@@ -80,7 +80,7 @@ function ciniki_subscriptions_settingsUpdate(&$ciniki) {
                 ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
                 return $rc;
             }
-            ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $args['business_id'], 
+            ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.subscriptions', 'ciniki_subscription_history', $args['tnid'], 
                 2, 'ciniki_subscriptions_settings', $field, 'detail_value', $ciniki['request']['args'][$field]);
             $ciniki['syncqueue'][] = array('push'=>'ciniki.subscriptions.setting', 
                 'args'=>array('id'=>$field));
@@ -96,11 +96,11 @@ function ciniki_subscriptions_settingsUpdate(&$ciniki) {
     }
 
     //
-    // Update the last_change date in the business modules
+    // Update the last_change date in the tenant modules
     // Ignore the result, as we don't want to stop user updates if this fails.
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
-    ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'subscriptions');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'updateModuleChangeDate');
+    ciniki_tenants_updateModuleChangeDate($ciniki, $args['tnid'], 'ciniki', 'subscriptions');
 
     return array('stat'=>'ok');
 }

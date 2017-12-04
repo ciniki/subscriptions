@@ -7,7 +7,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:         The ID of the business the members belong to.
+// tnid:         The ID of the tenant the members belong to.
 //
 // Returns
 // -------
@@ -19,7 +19,7 @@ function ciniki_subscriptions_subscriptionDownloadExcel(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'), 
         'columns'=>array('required'=>'yes', 'blank'=>'no', 'type'=>'list', 'delimiter'=>'::', 'name'=>'Columns'), 
         )); 
@@ -30,10 +30,10 @@ function ciniki_subscriptions_subscriptionDownloadExcel(&$ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.subscriptionDownloadExcel'); 
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['tnid'], 'ciniki.subscriptions.subscriptionDownloadExcel'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -67,21 +67,21 @@ function ciniki_subscriptions_subscriptionDownloadExcel(&$ciniki) {
 //          . "ciniki_customer_addresses.postal) AS mailing_addresses "
         . "FROM ciniki_subscription_customers "
         . "LEFT JOIN ciniki_customers ON (ciniki_subscription_customers.customer_id = ciniki_customers.id "
-            . "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND ciniki_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . ") "
         . "LEFT JOIN ciniki_customer_phones ON (ciniki_subscription_customers.customer_id = ciniki_customer_phones.customer_id "
-            . "AND ciniki_customer_phones.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND ciniki_customer_phones.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . ") "
         . "LEFT JOIN ciniki_customer_emails ON (ciniki_subscription_customers.customer_id = ciniki_customer_emails.customer_id "
-            . "AND ciniki_customer_emails.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND ciniki_customer_emails.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "AND ciniki_customer_emails.flags&0x10 = 0 " // Make sure emails are wanted
             . ") "
         . "LEFT JOIN ciniki_customer_addresses ON (ciniki_subscription_customers.customer_id = ciniki_customer_addresses.customer_id "
-            . "AND ciniki_customer_addresses.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND ciniki_customer_addresses.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "AND ciniki_customer_addresses.flags&0x04 > 0 "   // Mailing addresses only
             . ") "
         . "WHERE ciniki_subscription_customers.subscription_id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
-        . "AND ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND ciniki_subscription_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND ciniki_subscription_customers.status = 10 "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
@@ -91,7 +91,7 @@ function ciniki_subscriptions_subscriptionDownloadExcel(&$ciniki) {
                 'company', 'display_name', 'type', 'status'),
         //      'phones', 'emails', 'mailing_addresses'),
             'maps'=>array(
-                'type'=>array('1'=>'Individual', '2'=>'Business'),
+                'type'=>array('1'=>'Individual', '2'=>'Tenant'),
                 ),
             'containers'=>array(
                 'phones'=>array('fname'=>'phone_id', 'name'=>'phone',

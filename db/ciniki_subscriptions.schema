@@ -2,10 +2,10 @@
 # Description
 # -----------
 # The subscriptions table stores the subscription or mailng lists
-# for a business.  The customers who are subscribed to the lists
+# for a tenant.  The customers who are subscribed to the lists
 # are stored in subscription_customers.
 #
-# By default, a subscription will be created for each business,
+# By default, a subscription will be created for each tenant,
 # which will be set to auto_subscribe.
 # 
 # *note* This table was designed to go with newsletters, but
@@ -15,7 +15,7 @@
 # ------
 # id:               The subscription id.
 # uuid:             The Universal Unique ID.
-# business_id:      The business the subscription is attached to.
+# tnid:             The tenant the subscription is attached to.
 #
 # status:           The current status of the subscription list.  This is used to create one of lists if required.
 #                   
@@ -35,7 +35,7 @@
 # name:             The name for the subscription.  This field will
 #                   be displayed to the customer.
 #
-# description:      Free form field for the business owner to enter a 
+# description:      Free form field for the tenant owner to enter a 
 #                   description about the subscription.  This field will
 #                   be shown to customers.
 #
@@ -45,7 +45,7 @@
 create table ciniki_subscriptions (
     id int not null auto_increment,
     uuid char(36) not null,
-    business_id int not null,
+    tnid int not null,
     status tinyint unsigned not null,
     flags tinyint unsigned not null,
     name varchar(150) not null,
@@ -54,5 +54,5 @@ create table ciniki_subscriptions (
     last_updated datetime not null,
     primary key (id),
     unique index (uuid),
-    index (business_id)
+    index (tnid)
 ) ENGINE='InnoDB', COMMENT='v1.03';

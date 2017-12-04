@@ -10,7 +10,7 @@
 // Returns
 // -------
 //
-function ciniki_subscriptions_hooks_emailList($ciniki, $business_id, $args) {
+function ciniki_subscriptions_hooks_emailList($ciniki, $tnid, $args) {
 
     if( !isset($args['subscription_ids']) ) {
         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.1', 'msg'=>'No subscriptions specified'));
@@ -27,15 +27,15 @@ function ciniki_subscriptions_hooks_emailList($ciniki, $business_id, $args) {
         . "ciniki_customers.display_name AS customer_name, "
         . "ciniki_customer_emails.email, ciniki_subscriptions.uuid AS subscription_uuid "
         . "FROM ciniki_subscription_customers, ciniki_subscriptions, ciniki_customers, ciniki_customer_emails "
-        . "WHERE ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE ciniki_subscription_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_subscription_customers.subscription_id IN (" . ciniki_core_dbQuoteIDs($ciniki, $args['subscription_ids']) . ") "
         . "AND ciniki_subscription_customers.status = 10 "
         . "AND ciniki_subscription_customers.subscription_id = ciniki_subscriptions.id "
-        . "AND ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "AND ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_subscription_customers.customer_id = ciniki_customers.id "
-        . "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "AND ciniki_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_customers.id = ciniki_customer_emails.customer_id "
-        . "AND ciniki_customer_emails.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "AND ciniki_customer_emails.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND (ciniki_customer_emails.flags&0x30) = 0 "    // Only emals that are ok to send to
         . "ORDER BY ciniki_customer_emails.email "
         . "";

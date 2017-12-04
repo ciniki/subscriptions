@@ -9,7 +9,7 @@
 // Returns
 // -------
 //
-function ciniki_subscriptions_web_list($ciniki, $settings, $business_id) {
+function ciniki_subscriptions_web_list($ciniki, $settings, $tnid) {
     
     if( isset($ciniki['session']['customer']['id']) && $ciniki['session']['customer']['id'] > 0 ) {
         $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, "
@@ -17,13 +17,13 @@ function ciniki_subscriptions_web_list($ciniki, $settings, $business_id) {
             . "FROM ciniki_subscriptions "
             . "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
                 . "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['customer']['id']) . "') "
-            . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND (ciniki_subscriptions.flags&0x01) = 0x01 "
             . "";
     } else {
         $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.description, '0' AS subscribed "
             . "FROM ciniki_subscriptions "
-            . "WHERE ciniki_subscriptions.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND (ciniki_subscriptions.flags&0x01) = 0x01 "
             . "";
     }

@@ -7,10 +7,10 @@
 # ------
 # id:               The id for this subscription-customer combination.
 # uuid:             The Univeral Unique ID
-# business_id:      The business the subscription customer is attached to.
+# tnid:             The tenant the subscription customer is attached to.
 #
 # subscription_id:  The subscription to add the customer relationship to.
-# customer_id:      The customer of the business.
+# customer_id:      The customer of the tenant.
 #
 # status:           The status of the subscription
 #                   0 - unknown
@@ -24,7 +24,7 @@
 create table ciniki_subscription_customers (
     id int not null auto_increment,
     uuid char(36) not null,
-    business_id int not null,
+    tnid int not null,
     subscription_id int not null,               # links to subscriptions tables
     customer_id int not null,                   # links to users table
     status tinyint unsigned not null,
@@ -32,5 +32,5 @@ create table ciniki_subscription_customers (
     last_updated datetime not null,
     primary key (id),
     unique index (subscription_id, customer_id),
-    index (business_id, uuid, last_updated)
+    index (tnid, uuid, last_updated)
 ) ENGINE='InnoDB', COMMENT='v1.02';

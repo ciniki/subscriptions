@@ -22,7 +22,7 @@ function ciniki_subscriptions_subscriptionAddAllCustomers(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'subscription_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Subscription'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -32,10 +32,10 @@ function ciniki_subscriptions_subscriptionAddAllCustomers(&$ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
-    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['business_id'], 'ciniki.subscriptions.subscriptionAddAllCustomer'); 
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['tnid'], 'ciniki.subscriptions.subscriptionAddAllCustomer'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -64,9 +64,9 @@ function ciniki_subscriptions_subscriptionAddAllCustomers(&$ciniki) {
         . "LEFT JOIN ciniki_subscription_customers ON ("
             . "ciniki_subscription_customers.subscription_id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
             . "AND ciniki_customers.id = ciniki_subscription_customers.customer_id "
-            . "AND ciniki_subscription_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND ciniki_subscription_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . ") "
-        . "WHERE ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE ciniki_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND ciniki_customers.status < 60 "
         . "HAVING status = 0 "
         . "";
@@ -77,7 +77,7 @@ function ciniki_subscriptions_subscriptionAddAllCustomers(&$ciniki) {
     if( isset($rc['rows']) ) {  
         $customers = $rc['rows'];
         foreach($customers as $customer) {
-            $rc = ciniki_core_objectAdd($ciniki, $args['business_id'], 'ciniki.subscriptions.customer', array(
+            $rc = ciniki_core_objectAdd($ciniki, $args['tnid'], 'ciniki.subscriptions.customer', array(
                 'subscription_id'=>$args['subscription_id'],
                 'customer_id'=>$customer['customer_id'],
                 'status'=>10,
@@ -89,7 +89,7 @@ function ciniki_subscriptions_subscriptionAddAllCustomers(&$ciniki) {
     }
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'web', 'private', 'settingsUpdateSubscriptions');
-    $rc = ciniki_web_settingsUpdateSubscriptions($ciniki, $modules, $args['business_id']);
+    $rc = ciniki_web_settingsUpdateSubscriptions($ciniki, $modules, $args['tnid']);
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }
@@ -103,11 +103,11 @@ function ciniki_subscriptions_subscriptionAddAllCustomers(&$ciniki) {
     }
 
     //
-    // Update the last_change date in the business modules
+    // Update the last_change date in the tenant modules
     // Ignore the result, as we don't want to stop user updates if this fails.
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
-    ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'subscriptions');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'updateModuleChangeDate');
+    ciniki_tenants_updateModuleChangeDate($ciniki, $args['tnid'], 'ciniki', 'subscriptions');
 
     $ciniki['syncqueue'][] = array('push'=>'ciniki.subscriptions.customer', 
         'args'=>array('id'=>$args['subscription_id']));
