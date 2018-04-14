@@ -30,16 +30,25 @@ function ciniki_subscriptions_hooks_customerSubscriptions($ciniki, $tnid, $args)
             . "AND ciniki_subscriptions.status = 10 "           // Subscription is active, no archived/deleted
             . "ORDER BY name "
             . "";
-        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
-        $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.subscriptions', array(
-            array('container'=>'subscriptions', 'fname'=>'id', 'name'=>'subscription',
-                'fields'=>array('id', 'name', 'description')),
-            ));
-        if( $rc['stat'] != 'ok' ) {
-            return $rc;
-        }
-        if( isset($rc['subscriptions']) ) {
-            $subscriptions = $rc['subscriptions'];
+        if( isset($args['idlist']) && $args['idlist'] == 'yes' ) {
+            ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
+            $rc = ciniki_core_dbQueryList($ciniki, $strsql, 'ciniki.subscriptions', 'subscriptions', 'id');
+            if( $rc['stat'] != 'ok' ) {
+                return $rc;
+            }
+            $subscriptions = isset($rc['subscriptions']) ? implode(',', $rc['subscriptions']) : '';
+        } else {
+            ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
+            $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.subscriptions', array(
+                array('container'=>'subscriptions', 'fname'=>'id', 'name'=>'subscription',
+                    'fields'=>array('id', 'name', 'description')),
+                ));
+            if( $rc['stat'] != 'ok' ) {
+                return $rc;
+            }
+            if( isset($rc['subscriptions']) ) {
+                $subscriptions = $rc['subscriptions'];
+            }
         }
     }
 
