@@ -16,7 +16,7 @@
 //
 function ciniki_subscriptions_hooks_subscriptionList($ciniki, $tnid, $args) {
 
-    $strsql = "SELECT id, name, description "
+    $strsql = "SELECT id, name, flags, description "
         . "FROM ciniki_subscriptions "
         . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND status = 10 "
@@ -25,7 +25,7 @@ function ciniki_subscriptions_hooks_subscriptionList($ciniki, $tnid, $args) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
     $rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'ciniki.subscriptions', array(
         array('container'=>'subscriptions', 'fname'=>'id',
-            'fields'=>array('id', 'name', 'description')),
+            'fields'=>array('id', 'name', 'flags', 'description')),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
