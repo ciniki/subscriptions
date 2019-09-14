@@ -179,7 +179,7 @@ function ciniki_subscriptions_web_subscriptionManager(&$ciniki, $settings, $tnid
     }
 
     $html = '';
-    $html .= "<form action='" . $ciniki['request']['domain_base_url'] . "/subscriptions' method='post'>";
+    $html .= "<form action='" . $ciniki['request']['ssl_domain_base_url'] . "/subscriptions' method='post'>";
 //    if( isset($error_msg) && $error_msg != '' ) {
  //       $html .= "<div class='form-message-content'>"
   //          . "<div class='form-result-message form-" . ($errors == 'no' ? 'success' : 'error') . "-message'><div class='form-message-wrapper'>"
