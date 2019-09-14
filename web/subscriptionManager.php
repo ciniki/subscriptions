@@ -146,7 +146,7 @@ function ciniki_subscriptions_web_subscriptionManager(&$ciniki, $settings, $tnid
                 //
                 // Create the confirm url
                 //
-                $confirm_url = $ciniki['request']['domain_base_url'] . '/subscriptions/confirm?k=' . $signup_key;
+                $confirm_url = $ciniki['request']['ssl_domain_base_url'] . '/subscriptions/confirm?k=' . $signup_key;
                 $html_message = str_ireplace('{_confirm_url_}', $confirm_url, $html_message);
                 $text_message = str_ireplace('{_confirm_url_}', $confirm_url, $text_message);
 

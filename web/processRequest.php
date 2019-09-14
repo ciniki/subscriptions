@@ -16,7 +16,7 @@ function ciniki_subscriptions_web_processRequest(&$ciniki, $settings, $tnid, $ar
         'breadcrumbs'=>(isset($args['breadcrumbs'])?$args['breadcrumbs']:array()),
         'blocks'=>array(),
     );
-    $page['breadcrumbs'][] = array('name'=>'Mailing Lists', 'url'=>$ciniki['request']['domain_base_url'] . '/subscriptions');
+    $page['breadcrumbs'][] = array('name'=>'Mailing Lists', 'url'=>$ciniki['request']['ssl_domain_base_url'] . '/subscriptions');
 
     //
     // Load the public mailing lists
