@@ -190,6 +190,7 @@ function ciniki_subscriptions_main() {
             'subscription_name':'No',
 //          'customer_id':'No',
             'customer_name':'Yes',
+            'callsign':'No',
             'prefix':'No',
             'first':'No',
             'middle':'No',
@@ -206,6 +207,9 @@ function ciniki_subscriptions_main() {
 //              '_subscription_id':{'label':'Subscription ID', 'type':'toggle', 'toggles':this.toggleOptions},
                 'subscription_name':{'label':'Subscription Name', 'type':'toggle', 'toggles':this.toggleOptions},
 //              'customer_id':{'label':'Customer ID', 'type':'toggle', 'toggles':this.toggleOptions},
+                'callsign':{'label':'Customer Callsign', 'type':'toggle', 'toggles':this.toggleOptions,
+                    'visible':function() {return M.modFlagSet('ciniki.customers', 0x0400); },
+                    },
                 'display_name':{'label':'Customer full name', 'type':'toggle', 'toggles':this.toggleOptions},
                 'prefix':{'label':'Customer prefix', 'type':'toggle', 'toggles':this.toggleOptions},
                 'first':{'label':'Customer first name', 'type':'toggle', 'toggles':this.toggleOptions},
@@ -331,6 +335,21 @@ function ciniki_subscriptions_main() {
         if( aG != null ) {
             args = eval(aG);
         }
+
+        var slabel = 'Contact';
+        var plabel = 'Contacts';
+        if( M.modOn('ciniki.sapos') || M.modOn('ciniki.poma') || M.modOn('ciniki.products') ) {
+            slabel = 'Customer';
+            plabel = 'Customers';
+        }
+        this.subscription.sections._actions.list.addallcustomers.label = 'Add All ' + plabel;
+        this.download.sections._fields.fields.callsign.label = slabel + ' Callsign';
+        this.download.sections._fields.fields.display_name.label = slabel + ' Full Name';
+        this.download.sections._fields.fields.prefix.label = slabel + ' Prefix';
+        this.download.sections._fields.fields.first.label = slabel + ' First Name';
+        this.download.sections._fields.fields.middle.label = slabel + ' Middle Name';
+        this.download.sections._fields.fields.last.label = slabel + ' Last Name';
+        this.download.sections._fields.fields.suffix.label = slabel + ' Suffix';
 
         //
         // Create the app container if it doesn't exist, and clear it out
