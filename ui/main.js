@@ -239,15 +239,16 @@ function ciniki_subscriptions_main() {
         //
         this.subscribers = new M.panel('Subscribers',
             'ciniki_subscriptions_main', 'subscribers',
-            'mc', 'medium', 'sectioned', 'ciniki.subscriptions.main.subscribers');
+            'mc', 'large', 'sectioned', 'ciniki.subscriptions.main.subscribers');
         this.subscribers.data = {};
         this.subscribers.subscription_id = 0;
         this.subscribers.sections = {
-            'search':{'label':'Search', 'type':'livesearchgrid', 'livesearchcols':2, 'hint':'customer name', 'noData':'No customers found', },
-            'customers':{'label':'Subscribers', 'type':'simplegrid', 'num_cols':2,
+            'search':{'label':'Search', 'type':'livesearchgrid', 'livesearchcols':3, 'hint':'customer name', 'noData':'No customers found', },
+            'customers':{'label':'Subscribers', 'type':'simplegrid', 'num_cols':3,
                 'headerValues':null,
+                'headerValues':['Name', 'Email', ''],
                 'sortable':'yes',
-                'sortTypes':['text', 'text'],
+                'sortTypes':['text', 'text', 'text'],
                 },
             };
         this.subscribers.sectionData = function(s) { return this.data[s]; }
@@ -266,6 +267,8 @@ function ciniki_subscriptions_main() {
             if( j == 0 ) {
                 return d.customer.display_name;
             } else if( j == 1 ) {
+                return d.customer.emails;
+            } else if( j == 2 ) {
                 if( d.customer.status == 10 ) {
                     return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscribers.updateCustomer(event, event.target.innerHTML, '" + d.customer.customer_id + "'); return false;\">Unsubscribe</button>";
                 } else {
@@ -286,6 +289,8 @@ function ciniki_subscriptions_main() {
             if( j == 0 ) {
                 return d.customer.display_name;
             } else if( j == 1 ) {
+                return d.customer.emails;
+            } else if( j == 2 ) {
                 if( d.customer.status == 10 ) {
                     return "<button onclick=\"event.stopPropagation(); M.ciniki_subscriptions_main.subscribers.updateCustomer(event, event.target.innerHTML, '" + d.customer.customer_id + "'); return false;\">Unsubscribe</button>";
                 } else {

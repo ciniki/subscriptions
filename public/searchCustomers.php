@@ -46,33 +46,53 @@ function ciniki_subscriptions_searchCustomers($ciniki) {
     // Search for the customer in the customers module, but also check if they are subscribed to the 
     // subscription or not
     //
-    $strsql = "SELECT ciniki_customers.id AS customer_id, "
-        . "ciniki_customers.display_name, "
-        . "IFNULL(ciniki_subscription_customers.status, 0) AS status, "
-        . "ciniki_subscription_customers.subscription_id "
-        . "FROM ciniki_customers "
-        . "LEFT JOIN ciniki_subscription_customers ON ("
-            . "ciniki_subscription_customers.subscription_id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
-            . "AND ciniki_customers.id = ciniki_subscription_customers.customer_id "
-            . "AND ciniki_subscription_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+    $strsql = "SELECT customers.id AS customer_id, "
+        . "customers.display_name, "
+        . "IFNULL(sc.status, 0) AS status, "
+        . "sc.subscription_id, "
+        . "emails.email AS emails "
+        . "FROM ciniki_customers AS customers "
+        . "LEFT JOIN ciniki_subscription_customers AS sc ON ("
+            . "sc.subscription_id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
+            . "AND customers.id = sc.customer_id "
+            . "AND sc.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . ") "
-        . "WHERE ciniki_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-        . "AND ciniki_customers.status < 60 "
-        . "AND ( ciniki_customers.first LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-            . "OR ciniki_customers.first LIKE '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-            . "OR ciniki_customers.last LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-            . "OR ciniki_customers.last LIKE '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-            . "OR ciniki_customers.company LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-            . "OR ciniki_customers.company LIKE '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+        . "LEFT JOIN ciniki_customer_emails AS emails ON ("
+            . "customers.id = emails.customer_id "
+            . "AND emails.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+            . ") "
+        . "WHERE customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+        . "AND customers.status < 60 "
+        . "AND ( customers.first LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR customers.first LIKE '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR customers.last LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR customers.last LIKE '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR customers.company LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR customers.company LIKE '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
             . ") "
         . "";
-
-    $strsql .= "ORDER BY ciniki_customers.sort_name ";
+    $strsql .= "ORDER BY customers.sort_name ";
     if( isset($args['limit']) && is_numeric($args['limit']) && $args['limit'] > 0 ) {
         $strsql .= "LIMIT " . ciniki_core_dbQuote($ciniki, $args['limit']) . " ";   // is_numeric verified
     }
 
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbRspQuery');
-    return ciniki_core_dbRspQuery($ciniki, $strsql, 'ciniki.subscriptions', 'customers', 'customer', array('stat'=>'ok', 'customers'=>array()));
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
+    $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.subscriptions', array(
+        array('container'=>'customers', 'fname'=>'customer_id', 'name'=>'customer',
+            'fields'=>array('customer_id', 'display_name', 'status', 'emails'),
+            'dlists'=>array('emails'=>','),
+            ),
+        ));
+    if( $rc['stat'] != 'ok' ) {
+        return $rc;
+    }
+    if( !isset($rc['customers']) ) {
+        return array('stat'=>'ok', 'customers'=>array());
+    }
+
+    return $rc;
+
+//    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbRspQuery');
+//    return ciniki_core_dbRspQuery($ciniki, $strsql, 'ciniki.subscriptions', 'customers', 'customer', array('stat'=>'ok', 'customers'=>array()));
 }
 ?>
