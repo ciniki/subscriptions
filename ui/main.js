@@ -362,7 +362,7 @@ function ciniki_subscriptions_main() {
         //
         var appContainer = M.createContainer(appPrefix, 'ciniki_subscriptions_main', 'yes');
         if( appContainer == null ) {
-            alert('App Error');
+            M.alert('App Error');
             return false;
         } 
 
@@ -458,7 +458,7 @@ function ciniki_subscriptions_main() {
     }
 
     this.deleteSubscription = function() {
-        if( confirm("Are you sure you want to remove '" + this.subscription.data.name + "'? This will unsubscribe all customers from this list, and remove any history of the subscription.") ) {
+        M.confirm("Are you sure you want to remove '" + this.subscription.data.name + "'? This will unsubscribe all customers from this list, and remove any history of the subscription.",null,function() {
             var rsp = M.api.getJSONCb('ciniki.subscriptions.subscriptionDelete', 
                 {'tnid':M.curTenantID, 'subscription_id':M.ciniki_subscriptions_main.edit.subscription_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
@@ -467,7 +467,7 @@ function ciniki_subscriptions_main() {
                     }
                     M.ciniki_subscriptions_main.subscription.close();
                 });
-        }
+        });
     }
 
     this.showSubscribers = function(cb, sid) {
