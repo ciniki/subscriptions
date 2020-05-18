@@ -490,8 +490,8 @@ function ciniki_subscriptions_main() {
     };
 
     this.addAllCustomers = function(sid) {
-        if( confirm("Are you sure you add all your customers to this mailing list?") ) {
-            var rsp = M.api.getJSONCb('ciniki.subscriptions.subscriptionAddAllCustomers', 
+        M.confirm("Are you sure you add all your customers to this mailing list?",null,function() {
+            M.api.getJSONCb('ciniki.subscriptions.subscriptionAddAllCustomers', 
                 {'tnid':M.curTenantID, 'subscription_id':sid}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
@@ -499,6 +499,6 @@ function ciniki_subscriptions_main() {
                     }
                     M.ciniki_subscriptions_main.showSubscription();
                 });
-        }
+        });
     };
 }
