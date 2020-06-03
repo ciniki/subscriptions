@@ -92,6 +92,31 @@ function ciniki_subscriptions_subscriptionDelete(&$ciniki) {
     }   
 
     //
+    // Remove the connections between mailings and subscriptions
+    //
+    $strsql = "SELECT id, uuid "
+        . "FROM ciniki_mailing_subscriptions "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+        . "AND subscription_id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' "
+        . "";
+    $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.subscriptions', 'item');
+    if( $rc['stat'] != 'ok' ) {
+        ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
+        return $rc;
+    }
+    if( isset($rc['rows']) && count($rc['rows']) > 0 ) {
+        $items = $rc['rows'];
+        foreach($items as $iid => $item) {
+            $rc = ciniki_core_objectDelete($ciniki, $args['tnid'], 'ciniki.mail.mailing_subscription', 
+                $item['id'], $item['uuid'], 0x04);
+            if( $rc['stat'] != 'ok' ) {
+                ciniki_core_dbTransactionRollback($ciniki, 'ciniki.subscriptions');
+                return $rc; 
+            }
+        }
+    }
+
+    //
     // Remove the customers for the subscription
     //
     $strsql = "SELECT id, uuid "
