@@ -25,6 +25,7 @@ function ciniki_subscriptions_stats($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
+        'status'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Status'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -41,29 +42,40 @@ function ciniki_subscriptions_stats($ciniki) {
         return $rc;
     }   
 
+    $status_sql = '';
+    if( isset($args['status']) && $args['status'] != '' ) {
+        $status_sql .= "AND ciniki_subscriptions.status = '" . ciniki_core_dbQuote($ciniki, $args['status']) . "' ";
+    }
+
     //
     // Get the number of orders in each status for the tenant, 
     // if no rows found, then return empty array
     //
     $strsql = "SELECT ciniki_subscriptions.id, ciniki_subscriptions.name, "
         . "ciniki_subscriptions.description, "
+        . "IF((ciniki_subscriptions.flags&0x01)=0x01, 'Yes', 'No') AS public, "
+        . "IF((ciniki_subscriptions.flags&0x02)=0x02, 'Yes', 'No') AS auto_subscribe, "
         . "COUNT(ciniki_subscription_customers.customer_id) AS count "
         . "FROM ciniki_subscriptions "
         . "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
             . "AND ciniki_subscription_customers.customer_id > 0 "
             . "AND ciniki_subscription_customers.status = 10 ) "
         . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+        . $status_sql
         . "GROUP BY ciniki_subscriptions.id "
         . "ORDER BY name "
         . "";
-    $rc = ciniki_core_dbRspQuery($ciniki, $strsql, 'ciniki.subscriptions', 'subscriptions', 'subscription', array('stat'=>'ok', 'subscriptions'=>array()));
-    if( $rc['stat'] != 'ok' ) { 
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.5', 'msg'=>'Unable to retrieve subscriptions', 'err'=>$rc['err']));
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
+    $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.subscriptions', array(
+        array('container'=>'subscriptions', 'fname'=>'id', 
+            'fields'=>array('id', 'name', 'description', 'public', 'auto_subscribe', 'count'),
+            ),
+        ));
+    if( $rc['stat'] != 'ok' ) {
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.13', 'msg'=>'Unable to load subscriptions', 'err'=>$rc['err']));
     }
-    if( !isset($rc['subscriptions']) ) {
-        return array('stat'=>'ok', 'subscriptions'=>array());
-    }
+    $subscriptions = isset($rc['subscriptions']) ? $rc['subscriptions'] : array();
 
-    return array('stat'=>'ok', 'subscriptions'=>$rc['subscriptions']);
+    return array('stat'=>'ok', 'subscriptions'=>$subscriptions);
 }
 ?>

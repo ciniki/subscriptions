@@ -63,7 +63,7 @@ function ciniki_subscriptions_subscriptionSubscriberList($ciniki) {
     $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.subscriptions', array(
         array('container'=>'customers', 'fname'=>'customer_id', 'name'=>'customer',
             'fields'=>array('customer_id', 'display_name', 'status', 'member_status', 'emails'),
-            'dlists'=>array('emails'=>','),
+            'dlists'=>array('emails'=>', '),
             ),
         ));
     if( $rc['stat'] != 'ok' ) {

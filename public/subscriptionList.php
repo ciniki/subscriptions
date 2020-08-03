@@ -26,6 +26,7 @@ function ciniki_subscriptions_subscriptionList($ciniki) {
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'customer_id'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Customer'), 
+        'status'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Status'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -41,6 +42,11 @@ function ciniki_subscriptions_subscriptionList($ciniki) {
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
+    
+    $status_sql = '';
+    if( isset($args['status']) && $args['status'] != '' ) {
+        $status_sql .= "AND ciniki_subscriptions.status = '" . ciniki_core_dbQuote($ciniki, $args['status']) . "' ";
+    }
 
     //
     // Get the number of orders in each status for the tenant, 
@@ -53,6 +59,7 @@ function ciniki_subscriptions_subscriptionList($ciniki) {
             . "LEFT JOIN ciniki_subscription_customers ON (ciniki_subscriptions.id = ciniki_subscription_customers.subscription_id "
                 . "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $args['customer_id']) . "') "
             . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+            . $status_sql
             . "ORDER BY ciniki_subscriptions.name "
             . "";
     } else {
@@ -60,6 +67,7 @@ function ciniki_subscriptions_subscriptionList($ciniki) {
             . "ciniki_subscriptions.flags "
             . "FROM ciniki_subscriptions "
             . "WHERE ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+            . $status_sql
             . "ORDER BY ciniki_subscriptions.name "
             . "";
     }

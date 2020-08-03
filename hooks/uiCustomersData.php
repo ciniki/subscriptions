@@ -48,6 +48,7 @@ function ciniki_subscriptions_hooks_uiCustomersData($ciniki, $tnid, $args) {
     $strsql = "SELECT subs.id, "
         . "subs.name, "
         . "subcustomers.id AS customer_subscription_id, "
+        . "subcustomers.customer_id, "
         . "subs.description, "
         . "subcustomers.status, "
         . "IFNULL(customers.display_name, '') AS display_name "
@@ -62,11 +63,15 @@ function ciniki_subscriptions_hooks_uiCustomersData($ciniki, $tnid, $args) {
             . "AND customers.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . ") "
         . "WHERE subs.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
+        . "AND subs.status = 10 "
         . "ORDER BY subs.name, customers.display_name "
         . "";
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
     $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.customers', array(
-        array('container'=>'subscriptions', 'fname'=>'id', 'name'=>'subscription', 'fields'=>array('id', 'name', 'description', 'status', 'display_name'), 'dlists'=>array('display_name'=>'<br/>')),
+        array('container'=>'subscriptions', 'fname'=>'id', 'name'=>'subscription', 
+            'fields'=>array('id', 'name', 'description', 'status', 'display_name'), 
+            'dlists'=>array('display_name'=>'<br/>'),
+            ),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
@@ -87,20 +92,21 @@ function ciniki_subscriptions_hooks_uiCustomersData($ciniki, $tnid, $args) {
             }
         }
 
-
         $sections = array(
             'subscriptions' => array(
                 'label' => 'Subscriptions',
                 'type' => 'simplegrid', 
                 'num_cols' => 2,
-                'headerValues' => array('Subscription', 'Name'),
-                'cellClasses' => array('aligntop', ''),
+                'headerValues' => array('Name', 'Status'),
+                'cellClasses' => array('', ''),
                 'noData' => 'No subscriptions',
-//                'editApp' => array('app'=>'ciniki.fatt.sapos', 'args'=>array('registration_id'=>'d.id;', 'source'=>'\'\'')),
+                'changeTxt' => 'Edit Subscriptions',
+                'changeApp' => array('app'=>'ciniki.subscriptions.main', 'args'=>array('customer_id'=>$args['customer_id'], 'source'=>'\'\'')),
                 'cellValues' => array(
                     '0' => "d.name",
                     '1' => "d.display_name",
                     ),
+                'rowClass' => "(d.status == 10 ? 'statusgreen' : (d.status == 60 ? 'statusred' : ''))",
                 'data' => $rc['subscriptions'],
                 ),
             );
