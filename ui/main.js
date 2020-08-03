@@ -535,6 +535,8 @@ function ciniki_subscriptions_main() {
                     }
                     M.ciniki_subscriptions_main.customer.close();
                 });
+        } else {
+            this.close();
         }
     }
     this.customer.addClose('Back');
