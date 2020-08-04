@@ -29,6 +29,16 @@ function ciniki_subscriptions_customerSubscriptionsUpdate($ciniki) {
     }   
     $args = $rc['args'];
 
+    //  
+    // Make sure this module is activated, and
+    // check permission to run this function for this tenant
+    //  
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'subscriptions', 'private', 'checkAccess');
+    $rc = ciniki_subscriptions_checkAccess($ciniki, $args['tnid'], 'ciniki.subscriptions.customerSubscriptionsUpdate'); 
+    if( $rc['stat'] != 'ok' ) { 
+        return $rc;
+    }   
+
     //
     // Setup defaults
     if( !isset($args['subs']) ) { 
