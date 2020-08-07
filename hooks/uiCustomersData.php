@@ -101,7 +101,7 @@ function ciniki_subscriptions_hooks_uiCustomersData($ciniki, $tnid, $args) {
                 'cellClasses' => array('', ''),
                 'noData' => 'No subscriptions',
                 'changeTxt' => 'Edit Subscriptions',
-                'changeApp' => array('app'=>'ciniki.subscriptions.main', 'args'=>array('customer_id'=>$args['customer_id'], 'source'=>'\'\'')),
+                'changeApp' => '',
                 'cellValues' => array(
                     '0' => "d.name",
                     '1' => "d.display_name",
@@ -110,6 +110,9 @@ function ciniki_subscriptions_hooks_uiCustomersData($ciniki, $tnid, $args) {
                 'data' => $rc['subscriptions'],
                 ),
             );
+        if( isset($args['customer_id']) ) {
+            $sections['subscriptions']['changeApp'] = array('app'=>'ciniki.subscriptions.main', 'args'=>array('customer_id'=>$args['customer_id'], 'source'=>'\'\''));
+        }
         $rsp['tabs'][] = array(
             'id' => 'ciniki.subscriptions.lists',
             'label' => 'Subscriptions',
