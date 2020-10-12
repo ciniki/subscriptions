@@ -232,7 +232,7 @@ function ciniki_subscriptions_web_subscriptionManager(&$ciniki, $settings, $tnid
 if( isset($ciniki['session']['customer']['id']) && $ciniki['session']['customer']['id'] > 0 ) {
     $html = '';
 }
-    $blocks[] = array('type'=>'content', 'title'=>$title, 'html'=>$html);
+    $blocks[] = array('type'=>'content', 'title'=>$title, 'section'=>'mailing-lists', 'html'=>$html);
 
     return array('stat'=>'ok', 'blocks'=>$blocks);
 }
