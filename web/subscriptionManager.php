@@ -107,6 +107,16 @@ function ciniki_subscriptions_web_subscriptionManager(&$ciniki, $settings, $tnid
                 $errors = 'yes';
                 $blocks[] = array('type'=>'formmessage', 'level'=>'error', 'message'=>'You must enter a valid email address.');
             }
+            // Detect Spam
+            if( isset($_POST['subscription_email_again']) && $_POST['subscription_email_again'] != '' ) {
+                $errors = 'yes';
+                ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'logFileMsg');
+                ciniki_core_logFileMsg($ciniki, $tnid, 'spam', 'BLOCKED FROM ' . $_POST['subscription_email_again'] . ' - '
+                    . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'NO REFERER'));
+                $blocks[] = array('type'=>'formmessage', 'level'=>'success', 'message'=>'We have sent you a confirmation message. '
+                    . 'Please check your email and click on the link provided to complete your subscription. If you have any problems, please contact us for help.');
+                $display_form = 'no';
+            }
             if( $errors == 'no' ) {
                 $signup_data = array(
                     'name' => (isset($_POST['subscription_name'])?$_POST['subscription_name']:''),
@@ -205,6 +215,10 @@ function ciniki_subscriptions_web_subscriptionManager(&$ciniki, $settings, $tnid
                 . "<div class='input'>"
                 . "<label for='subscription_email'>Email Address</label>"
                 . "<input type='email' class='text' id='subscription_email' name='subscription_email' value='$email'>"
+                . "</div>"
+                . "<div class='input hidden'>"
+                . "<label for='subscription_email_again'>Email Again</label>"
+                . "<input type='email' class='text' id='subscription_email_again' name='subscription_email_again' value='$email'>"
                 . "</div>"
                 . "";
         }
