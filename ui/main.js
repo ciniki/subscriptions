@@ -149,7 +149,7 @@ function ciniki_subscriptions_main() {
     this.edit.remove = function() {
         M.confirm("Are you sure you want to remove '" + this.data.name + "'? This will unsubscribe all customers from this list, and remove any history of the subscription.",null,function() {
             M.api.getJSONCb('ciniki.subscriptions.subscriptionDelete', 
-                {'tnid':M.curTenantID, 'subscription_id':this.subscription_id}, function(rsp) {
+                {'tnid':M.curTenantID, 'subscription_id':M.ciniki_subscriptions_main.edit.subscription_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
