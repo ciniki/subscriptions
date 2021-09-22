@@ -34,7 +34,6 @@ function ciniki_subscriptions_main() {
     };  
     this.menu.sectionData = function(s) { return this.data; }
     this.menu.cellValue = function(s, i, j, d) { 
-        console.log(d);
         switch(j) {
             case 0: return d.name;
             case 1: return d.count;
