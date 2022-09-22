@@ -52,10 +52,10 @@ create table ciniki_subscriptions (
     flags tinyint unsigned not null,
     name varchar(150) not null,
     description varchar(2000) not null,
-    mailchimp_list_id varchar(150) not null,
+#    mailchimp_list_id varchar(150) not null,
     date_added datetime not null,
     last_updated datetime not null,
     primary key (id),
     unique index (uuid),
     index (tnid)
-) ENGINE='InnoDB', COMMENT='v1.04';
+) ENGINE='InnoDB', COMMENT='v1.03';
