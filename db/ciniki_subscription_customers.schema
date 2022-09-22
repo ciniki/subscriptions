@@ -5,21 +5,21 @@
 #
 # Fields
 # ------
-# id:               The id for this subscription-customer combination.
-# uuid:             The Univeral Unique ID
-# tnid:             The tenant the subscription customer is attached to.
+# id:                   The id for this subscription-customer combination.
+# uuid:                 The Univeral Unique ID
+# tnid:                 The tenant the subscription customer is attached to.
 #
-# subscription_id:  The subscription to add the customer relationship to.
-# customer_id:      The customer of the tenant.
+# subscription_id:      The subscription to add the customer relationship to.
+# customer_id:          The customer of the tenant.
 #
-# status:           The status of the subscription
-#                   0 - unknown
-#                   2 - pending
-#                   10 - subscribed
-#                   60 - removed
+# status:               The status of the subscription
+#                           0 - unknown
+#                           2 - pending
+#                           10 - subscribed
+#                           60 - removed
 #
-# date_added:       The date and time the record was added.
-# last_updated:     The date and time the record was last updated.
+# date_added:           The date and time the record was added.
+# last_updated:         The date and time the record was last updated.
 #
 create table ciniki_subscription_customers (
     id int not null auto_increment,
