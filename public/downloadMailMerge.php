@@ -100,7 +100,7 @@ function ciniki_subscriptions_downloadMailMerge($ciniki) {
         $objPHPExcelWorksheet->setCellValueByColumnAndRow(0, $row, $customer['display_name'], false);
         $objPHPExcelWorksheet->setCellValueByColumnAndRow(1, $row, $customer['address1'], false);
         $col = 2;
-        if( $row['address2'] != '' ) {
+        if( $customer['address2'] != '' ) {
             $objPHPExcelWorksheet->setCellValueByColumnAndRow($col++, $row, $customer['address2'], false);
         }
         if( $customer['city'] != '' || $customer['province'] != '' || $customer['postal'] != '' ) {
@@ -116,7 +116,7 @@ function ciniki_subscriptions_downloadMailMerge($ciniki) {
             }
             $objPHPExcelWorksheet->setCellValueByColumnAndRow($col++, $row, $value, false);
         }
-        if( $row['country'] != '' ) {
+        if( $customer['country'] != '' ) {
             $objPHPExcelWorksheet->setCellValueByColumnAndRow($col++, $row, $customer['country'], false);
         }
         $row++;
