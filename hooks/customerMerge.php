@@ -39,7 +39,7 @@ function ciniki_subscriptions_hooks_customerMerge($ciniki, $tnid, $args) {
     }
     $items = $rc['rows'];
     foreach($items as $i => $row) {
-        $rc = ciniki_core_objectUpdate($ciniki, $tnid, 'ciniki.subscriptions.custaomer', $row['id'], array('customer_id'=>$args['primary_customer_id']), 0x04);
+        $rc = ciniki_core_objectUpdate($ciniki, $tnid, 'ciniki.subscriptions.customer', $row['id'], array('customer_id'=>$args['primary_customer_id']), 0x04);
         if( $rc['stat'] != 'ok' ) {
             return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.14', 'msg'=>'Unable to update subscription customer.', 'err'=>$rc['err']));
         }
