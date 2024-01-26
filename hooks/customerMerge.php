@@ -26,6 +26,10 @@ function ciniki_subscriptions_hooks_customerMerge($ciniki, $tnid, $args) {
     $updated = 0;
 
     //
+    // Jan 2024, Code needs to be moved from customers/public/merge
+    //
+
+/*    //
     // Get the list of message to update
     //
     $strsql = "SELECT id "
@@ -40,6 +44,10 @@ function ciniki_subscriptions_hooks_customerMerge($ciniki, $tnid, $args) {
     $items = $rc['rows'];
     foreach($items as $i => $row) {
         $rc = ciniki_core_objectUpdate($ciniki, $tnid, 'ciniki.subscriptions.customer', $row['id'], array('customer_id'=>$args['primary_customer_id']), 0x04);
+        if( $rc['stat'] != 'ok' && $rc['err']['code'] == 'ciniki.core.84' ) {
+            // Duplicate entry, 
+
+        }
         if( $rc['stat'] != 'ok' ) {
             return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.subscriptions.14', 'msg'=>'Unable to update subscription customer.', 'err'=>$rc['err']));
         }
@@ -53,7 +61,7 @@ function ciniki_subscriptions_hooks_customerMerge($ciniki, $tnid, $args) {
         //
         ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'updateModuleChangeDate');
         ciniki_tenants_updateModuleChangeDate($ciniki, $tnid, 'ciniki', 'subscriptions');
-    }
+    } */
 
     return array('stat'=>'ok', 'updated'=>$updated);
 }
