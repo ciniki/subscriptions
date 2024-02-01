@@ -116,6 +116,7 @@ function ciniki_subscriptions_hooks_uiCustomersData($ciniki, $tnid, $args) {
         $rsp['tabs'][] = array(
             'id' => 'ciniki.subscriptions.lists',
             'label' => 'Subscriptions',
+            'priority' => 1000,
             'sections' => $sections,
             );
     } else {
