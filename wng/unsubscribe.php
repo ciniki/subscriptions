@@ -25,14 +25,6 @@ function ciniki_subscriptions_wng_unsubscribe(&$ciniki, $tnid, $request, $subscr
         return $rc;
     }   
 
-
-    //
-    // Run check
-    //
-    error_log(print_r($_GET,true));
-
-    return array('stat'=>'ok');
-
     //
     // Check if already in table
     //
