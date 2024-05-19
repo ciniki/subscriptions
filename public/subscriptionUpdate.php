@@ -27,6 +27,7 @@ function ciniki_subscriptions_subscriptionUpdate(&$ciniki) {
         'status'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Status'),
         'flags'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Flags'), 
         'description'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Description'), 
+        'notify_emails'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Notify Emails'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;

@@ -1,0 +1,2 @@
+ALTER TABLE ciniki_subscriptions ADD COLUMN notify_emails varchar(1000) not null after description;
+ALTER TABLE ciniki_subscriptions COMMENT='v1.04';

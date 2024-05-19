@@ -80,6 +80,7 @@ function ciniki_subscriptions_main() {
             'name':{'label':'Name', 'type':'text'},
             'status':{'label':'Status', 'type':'toggle', 'join':'yes', 'default':'10', 'toggles':this.statusOptions},
             'flags':{'label':'Options', 'type':'flags', 'join':'yes', 'flags':this.subscriptionFlags},
+            'notify_emails':{'label':'Notify Emails', 'type':'text'},
             }},
         '_desc':{'label':'Description', 'fields':{
             'description':{'label':'', 'hidelabel':'yes', 'type':'textarea'},

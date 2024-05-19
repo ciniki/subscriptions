@@ -46,7 +46,7 @@ function ciniki_subscriptions_subscriptionGet($ciniki) {
     $date_format = ciniki_users_dateFormat($ciniki);
     $datetime_format = ciniki_users_datetimeFormat($ciniki);
 
-    $strsql = "SELECT id, name, status, flags, description "
+    $strsql = "SELECT id, name, status, flags, description, notify_emails "
         . "FROM ciniki_subscriptions "
         . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND id = '" . ciniki_core_dbQuote($ciniki, $args['subscription_id']) . "' ";

@@ -39,6 +39,8 @@
 #                       description about the subscription.  This field will
 #                       be shown to customers.
 #
+# notify_emails:        The emails to be notified of changes and unsubscribe requests.
+#
 # mailchimp_list_id:    The ID in Mailchimp this subscription list is syncd with
 #
 # date_added:           The date and time the record was added.
@@ -52,10 +54,11 @@ create table ciniki_subscriptions (
     flags tinyint unsigned not null,
     name varchar(150) not null,
     description varchar(2000) not null,
+    notify_emails varchar(1000) not null,
 #    mailchimp_list_id varchar(150) not null,
     date_added datetime not null,
     last_updated datetime not null,
     primary key (id),
     unique index (uuid),
     index (tnid)
-) ENGINE='InnoDB', COMMENT='v1.03';
+) ENGINE='InnoDB', COMMENT='v1.04';

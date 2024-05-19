@@ -19,6 +19,7 @@ function ciniki_subscriptions_objects($ciniki) {
             'flags'=>array(),
             'name'=>array(),
             'description'=>array(),
+            'notify_emails'=>array('name'=>'Notify Emails', 'default'=>''),
             ),
         'history_table'=>'ciniki_subscription_history',
         );
@@ -26,9 +27,9 @@ function ciniki_subscriptions_objects($ciniki) {
         'name'=>'Subscription Customer',
         'table'=>'ciniki_subscription_customers',
         'fields'=>array(
-            'subscription_id'=>array('ref'=>'ciniki.subscriptions.subscription'),
-            'customer_id'=>array('ref'=>'ciniki.customers.customer'),
-            'status'=>array(),
+            'subscription_id'=>array('name'=>'Subscription', 'ref'=>'ciniki.subscriptions.subscription'),
+            'customer_id'=>array('name'=>'Customer', 'ref'=>'ciniki.customers.customer'),
+            'status'=>array('name'=>'Status'),
             ),
         'history_table'=>'ciniki_subscription_history',
         );

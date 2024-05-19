@@ -25,17 +25,32 @@ function ciniki_subscriptions_wng_unsubscribe(&$ciniki, $tnid, $request, $subscr
         return $rc;
     }   
 
+
+    //
+    // Run check
+    //
+    error_log(print_r($_GET,true));
+
+    return array('stat'=>'ok');
+
     //
     // Check if already in table
     //
-    $strsql = "SELECT ciniki_subscription_customers.id, ciniki_subscription_customers.status, "
-        . "ciniki_subscriptions.id, ciniki_subscriptions.name, ciniki_subscriptions.flags, "
+    $strsql = "SELECT ciniki_subscription_customers.id, "
+        . "ciniki_subscription_customers.status, "
+        . "ciniki_subscriptions.id, "
+        . "ciniki_subscriptions.name, "
+        . "ciniki_subscriptions.flags, "
         . "CONCAT_WS(' ', ciniki_customers.first, ciniki_customers.last) AS customer_name "
         . "FROM ciniki_subscription_customers "
-        . "LEFT JOIN ciniki_subscriptions ON (ciniki_subscription_customers.subscription_id = ciniki_subscriptions.id "
-            . "AND ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "') "
-        . "LEFT JOIN ciniki_customers ON (ciniki_subscription_customers.customer_id = ciniki_customers.id "
-            . "AND ciniki_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "') "
+        . "LEFT JOIN ciniki_subscriptions ON ("
+            . "ciniki_subscription_customers.subscription_id = ciniki_subscriptions.id "
+            . "AND ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
+            . ") "
+        . "LEFT JOIN ciniki_customers ON ("
+            . "ciniki_subscription_customers.customer_id = ciniki_customers.id "
+            . "AND ciniki_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
+            . ") "
         . "WHERE ciniki_subscription_customers.subscription_id = '" . ciniki_core_dbQuote($ciniki, $subscription_id) . "' "
         . "AND ciniki_subscription_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_subscription_customers.customer_id = '" . ciniki_core_dbQuote($ciniki, $customer_id) . "' "
@@ -95,6 +110,10 @@ function ciniki_subscriptions_wng_unsubscribe(&$ciniki, $tnid, $request, $subscr
                         );
                 }
             }
+
+            //
+            // Email the customer to let them know there were unsubscribed
+            //
         }
     } else {
         //
