@@ -34,6 +34,7 @@ function ciniki_subscriptions_hooks_emailList($ciniki, $tnid, $args) {
         . "AND ciniki_subscriptions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_subscription_customers.customer_id = ciniki_customers.id "
         . "AND ciniki_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
+        . "AND ciniki_customers.status < 50 " // Active & On Hold customers
         . "AND ciniki_customers.id = ciniki_customer_emails.customer_id "
         . "AND ciniki_customer_emails.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND (ciniki_customer_emails.flags&0x30) = 0 "    // Only emals that are ok to send to
